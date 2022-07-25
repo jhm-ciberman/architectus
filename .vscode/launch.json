@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/bin/Debug/net6.0-windows/Architectus.dll",
+            "program": "${workspaceFolder}/bin/net6.0-windows/Editor.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "console": "internalConsole",

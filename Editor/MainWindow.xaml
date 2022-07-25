@@ -1,0 +1,23 @@
+﻿<Window x:Class="Editor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Editor"
+        mc:Ignorable="d"
+        xmlns:numeric="http://gu.se/NumericInput"
+        Title="MainWindow" Height="450" Width="800">
+    <DockPanel LastChildFill="True">
+        <StackPanel DockPanel.Dock="Left" Margin="10" Width="100">
+            <Label Content="Width" Margin="0,0,0,5"/>
+            <numeric:SpinnerDecorator>
+                <numeric:IntBox Value="{Binding PlotWidth, UpdateSourceTrigger=PropertyChanged}" MinValue="0" MaxValue="100" AllowSpinners="True" Width="60" Margin="0"/>
+            </numeric:SpinnerDecorator>
+            <Label Content="Height" Margin="0,10,0,0"/>
+            <numeric:SpinnerDecorator>
+                <numeric:IntBox Value="{Binding PlotHeight, UpdateSourceTrigger=PropertyChanged}" MinValue="0" MaxValue="100" AllowSpinners="True" Width="60" Margin="0"/>
+            </numeric:SpinnerDecorator>
+        </StackPanel>
+        <local:HousePreviewControl x:Name="HousePreviewControl" DataContext="{Binding House}" Margin="10"/>
+    </DockPanel>
+</Window>

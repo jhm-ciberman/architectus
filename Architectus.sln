@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Architectus", "Architectus\Architectus.csproj", "{86EAEDEE-265E-48C5-97C8-2B68E863E3B4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Editor", "Editor\Editor.csproj", "{97CAA5C7-5DEB-4EE5-AC7B-689722A8ED72}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{86EAEDEE-265E-48C5-97C8-2B68E863E3B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86EAEDEE-265E-48C5-97C8-2B68E863E3B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86EAEDEE-265E-48C5-97C8-2B68E863E3B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86EAEDEE-265E-48C5-97C8-2B68E863E3B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97CAA5C7-5DEB-4EE5-AC7B-689722A8ED72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97CAA5C7-5DEB-4EE5-AC7B-689722A8ED72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97CAA5C7-5DEB-4EE5-AC7B-689722A8ED72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97CAA5C7-5DEB-4EE5-AC7B-689722A8ED72}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C65987DC-5D6A-44B9-82BD-A0162616C3C4}
+	EndGlobalSection
+EndGlobal
