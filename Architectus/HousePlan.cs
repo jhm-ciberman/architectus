@@ -1,7 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Architectus;
 public enum RoomType
 {
-    Undefined = 0,
     Empty,
     Bedroom,
     Kitchen,
@@ -68,7 +69,7 @@ public class Room
     /// <summary>
     /// Gets or sets the room's type.
     /// </summary>
-    public RoomType Type { get; set; } = RoomType.Undefined;
+    public RoomType Type { get; set; } = RoomType.Empty;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Room"/> class.
@@ -90,13 +91,9 @@ public class HouseGenerator
 
     public CardinalDirection PlotDirection { get; } // The direction the plot entrance is facing.
 
-    public HouseGenerator(Random random)
+    public HouseGenerator(Random? random = null)
     {
-        this._random = random;
-    }
-
-    public HouseGenerator() : this(new Random())
-    {
+        this._random = random ?? Random.Shared;
     }
 
     public HousePlan Generate()
@@ -119,46 +116,56 @@ public class HouseGenerator
         throw new InvalidOperationException("Failed to generate a house.");
     }
 
-    private bool TryGenerate(out HousePlan house)
+    private RoomType[] _rooms = new[]
     {
-        var template = new GridTemplate
+        RoomType.Empty,
+        RoomType.Bedroom,
+        RoomType.Kitchen,
+        RoomType.LivingRoom,
+    };
+
+    private RoomType NextRoomType()
+    {
+        return this._rooms[this._random.Next(this._rooms.Length)];
+    }
+
+    private bool TryGenerate([NotNullWhen(true)] out HousePlan? house)
+    {
+        house = null;
+        var maxHouseArea = this.PlotSize - Vector2Int.One;
+        var minHouseArea = new Vector2Int(maxHouseArea.X * 0.8f, maxHouseArea.Y * 0.8f);
+        var paddingGenerator = new PaddingGenerator(this._random)
         {
-            Columns =
-            {
-                new ColumnDefinition("*"),
-                new ColumnDefinition("5"),
-                new ColumnDefinition("*")
-            },
-            Rows =
-            {
-                new RowDefinition("*"),
-                new RowDefinition("*"),
-            },
-            Mappings =
-            {
-                0, 1, 1,
-                2, 2, 0,
-            },
-            Elements =
-            {
-                new GridElement(RoomType.Empty),
-                new GridElement(RoomType.LivingRoom), // Non-empty terminal
-                new GridElement(RoomType.Kitchen),
-            },
+            RectangleSize = this.PlotSize,
+            MinThicknessX = 1,
+            MaxThicknessX = (int)(this.PlotSize.X * 0.6f), // 80% of the plot width.
+            MinThicknessY = 1,
+            MaxThicknessY = (int)(this.PlotSize.Y * 0.6f), // 80% of the plot height.
+            MinContentArea = minHouseArea.X * minHouseArea.Y, // The minimum area of the house.
         };
+
+        if (!paddingGenerator.TryGeneratePadding(out var padding)) return false;
+
+        var gridGenerator = new GridGenerator(this._random)
+        {
+            MinCellArea = 5,
+            GridSize = this.PlotSize - padding.Total,
+        };
+
+        if (! gridGenerator.TryGenerateGrid(out Grid? grid)) return false;
 
         house = new HousePlan(this.PlotSize);
         var floor = house.AddFloor();
 
-        if (template.CanHandle(floor.Size))
+        var topLeft = padding.TopLeft;
+        foreach (var cell in grid.GetCells())
         {
-            template.Handle(floor.Size, floor);
-        }
-        else
-        {
-            throw new InvalidOperationException("Failed to generate a house.");
+            // for now, assign a random room type to each cell.
+            var room = new Room(this.NextRoomType());
+            floor.AssignRoom(room, cell.Position + topLeft, cell.Size);
         }
 
+        Console.WriteLine($"Average aspect ratio: {grid.AverageAspectRatio}");
         return true;
     }
 }

@@ -13,6 +13,12 @@ public struct Vector2Int
         this.Y = y;
     }
 
+    public Vector2Int(float x, float y)
+    {
+        this.X = (int)x;
+        this.Y = (int)y;
+    }
+
     public static Vector2Int operator +(Vector2Int a, Vector2Int b)
     {
         return new Vector2Int(a.X + b.X, a.Y + b.Y);
