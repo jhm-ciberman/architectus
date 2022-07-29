@@ -1,17 +1,37 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
-            "name": ".NET Core Launch (console)",
+            "name": "Run WPF",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/bin/net6.0-windows/Editor.dll",
+            "preLaunchTask": "build:wpf",
+            "program": "${workspaceFolder}/Architectus.Editor.Wpf/bin/Debug/net6.0-windows/Architectus.Editor.Wpf.dll",
             "args": [],
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/Architectus.Editor.Wpf",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": "Run Gtk",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build:gtk",
+            "program": "${workspaceFolder}/Architectus.Editor.Gtk/bin/Debug/net6.0/Architectus.Editor.Gtk.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Architectus.Editor.Gtk",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        // Architectus.Editor.Mac
+        {
+            "name": "Run Mac",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build:mac",
+            "program": "${workspaceFolder}/Architectus.Editor.Mac/bin/Debug/net6.0-windows/Architectus.Editor.Mac.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Architectus.Editor.Mac",
             "console": "internalConsole",
             "stopAtEntry": false
         },

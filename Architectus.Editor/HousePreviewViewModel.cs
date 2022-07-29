@@ -1,6 +1,6 @@
 using Architectus;
 
-namespace Editor;
+namespace Architectus.Editor;
 
 public class HousePreviewViewModel : ObservableObject
 {

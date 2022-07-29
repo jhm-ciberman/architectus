@@ -2,24 +2,50 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "build:wpf",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Editor/Editor.csproj",
+                "${workspaceFolder}/Architectus.Editor.Wpf/Architectus.Editor.Wpf.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        // build:gtk
+        {
+            "label": "build:gtk",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/Architectus.Editor.Gtk/Architectus.Editor.Gtk.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        // build:mac
+        {
+            "label": "build:mac",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/Architectus.Editor.Mac/Architectus.Editor.Mac.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "publish",
+            "label": "publish:wpf",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/Editor/Editor.csproj",
+                "${workspaceFolder}/Architectus.Editor.Wpf/Architectus.Editor.Wpf.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -33,7 +59,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/Editor/Editor.csproj"
+                "${workspaceFolder}/Architectus.Editor.Wpf/Architectus.Editor.Wpf.csproj"
             ],
             "problemMatcher": "$msCompile"
         }
