@@ -83,6 +83,11 @@ public class GridGenerator
     public Vector2Int GridSize { get; set; } = new Vector2Int(100, 100);
 
     /// <summary>
+    /// Gets or sets the grid position. (in tiles)
+    /// </summary>
+    public Vector2Int GridPosition { get; set; } = new Vector2Int(0, 0);
+
+    /// <summary>
     /// Gets or sets the sampler to use when sampling the number of grid columns and rows.
     /// </summary>
     public ISampler GridCountSampler { get; set; } = GaussianSampler.Instance;
@@ -114,7 +119,7 @@ public class GridGenerator
         {
             if (this.TryGenerateRowsAndCols(out int[]? rowsSizes, out int[]? columnsSizes))
             {
-                grid = new Grid(columnsSizes, rowsSizes);
+                grid = new Grid(this.GridPosition, columnsSizes, rowsSizes);
                 return true;
             }
             attempts++;

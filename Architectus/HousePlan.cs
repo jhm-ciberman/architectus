@@ -1,86 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 
 namespace Architectus;
-public enum RoomType
-{
-    Empty,
-    Bedroom,
-    Kitchen,
-    LivingRoom,
-}
 
-
-
-public class HousePlan
-{
-    private readonly List<FloorPlan> _floors = new();
-    public IReadOnlyList<FloorPlan> Floors => this._floors;
-
-    public Vector2Int Size { get; }
-
-    public HousePlan(Vector2Int size)
-    {
-        this.Size = size;
-    }
-
-    internal FloorPlan AddFloor()
-    {
-        var floor = new FloorPlan(this.Size);
-        this._floors.Add(floor);
-        return floor;
-    }
-}
-
-public enum CardinalDirection
-{
-    North,
-    East,
-    South,
-    West,
-}
-
-public enum Rotation
-{
-    None = 0,
-    Rotate90 = 1,
-    Rotate180 = 2,
-    Rotate270 = 3,
-}
-
-[Flags]
-public enum Mirror
-{
-    None = 0,
-    Horizontal = 1,
-    Vertical = 2,
-}
-
-
-
-/// <summary>
-/// Represents a room in a house.
-/// </summary>
-public class Room
-{
-    private static int _nextId = 0;
-
-    public int Id { get; }
-
-    /// <summary>
-    /// Gets or sets the room's type.
-    /// </summary>
-    public RoomType Type { get; set; } = RoomType.Empty;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Room"/> class.
-    /// </summary>
-    /// <param name="type">The room's type.</param>
-    public Room(RoomType type)
-    {
-        this.Id = _nextId++;
-        this.Type = type;
-    }
-}
 
 
 public class HouseGenerator
@@ -116,31 +37,27 @@ public class HouseGenerator
         throw new InvalidOperationException("Failed to generate a house.");
     }
 
-    private RoomType[] _rooms = new[]
-    {
-        RoomType.Empty,
-        RoomType.Bedroom,
-        RoomType.Kitchen,
-        RoomType.LivingRoom,
-    };
-
-    private RoomType NextRoomType()
-    {
-        return this._rooms[this._random.Next(this._rooms.Length)];
-    }
-
     private bool TryGenerate([NotNullWhen(true)] out HousePlan? house)
     {
         house = null;
+
+        var entrancePlacer = new EntrancePlacer(this._random)
+        {
+            PlotSize = this.PlotSize,
+            PlotDirection = this.PlotDirection,
+        };
+
+        Vector2Int entrancePosition = entrancePlacer.GenerateEntrancePosition();
+
         var maxHouseArea = this.PlotSize - Vector2Int.One;
-        var minHouseArea = new Vector2Int(maxHouseArea.X * 0.8f, maxHouseArea.Y * 0.8f);
+        var minHouseArea = new Vector2Int((int)(maxHouseArea.X * 0.8f), (int)(maxHouseArea.Y * 0.8f));
         var paddingGenerator = new PaddingGenerator(this._random)
         {
             RectangleSize = this.PlotSize,
             MinThicknessX = 1,
-            MaxThicknessX = (int)(this.PlotSize.X * 0.6f), // 80% of the plot width.
+            MaxThicknessX = (int)(this.PlotSize.X * 0.6f), // 60% of the plot width.
             MinThicknessY = 1,
-            MaxThicknessY = (int)(this.PlotSize.Y * 0.6f), // 80% of the plot height.
+            MaxThicknessY = (int)(this.PlotSize.Y * 0.6f), // 60% of the plot height.
             MinContentArea = minHouseArea.X * minHouseArea.Y, // The minimum area of the house.
         };
 
@@ -148,21 +65,40 @@ public class HouseGenerator
 
         var gridGenerator = new GridGenerator(this._random)
         {
-            MinCellArea = 5,
+            MinCellArea = 4,
             GridSize = this.PlotSize - padding.Total,
+            GridPosition = padding.TopLeft,
+            MinCellsCount = 8,
         };
 
         if (! gridGenerator.TryGenerateGrid(out Grid? grid)) return false;
 
+
+        var roomsPlacer = new RoomsPlacer(this._random)
+        {
+            EntrancePosition = entrancePosition,
+            RoomRequests =
+            {
+                new(RoomType.Bedroom, 10, 80),
+                new(RoomType.Kitchen, 10, 80),
+                new(RoomType.LivingRoom, 10, 80),
+            },
+        };
+
+        if (!roomsPlacer.TryPlaceRooms(grid)) return false;
+        
         house = new HousePlan(this.PlotSize);
         var floor = house.AddFloor();
-
-        var topLeft = padding.TopLeft;
-        foreach (var cell in grid.GetCells())
+        floor.Entrance = entrancePosition;
+        floor.Grid = grid;
+        foreach (var roomRequest in roomsPlacer.RoomRequests)
         {
-            // for now, assign a random room type to each cell.
-            var room = new Room(this.NextRoomType());
-            floor.AssignRoom(room, cell.Position + topLeft, cell.Size);
+            var room = new Room(roomRequest.Type);
+            foreach (var cells in roomRequest.AssignedCells)
+            {
+                room.AddRectangle(cells.Position, cells.Size);
+            }
+            floor.AddRoom(room);
         }
 
         Console.WriteLine($"Average aspect ratio: {grid.AverageAspectRatio}");

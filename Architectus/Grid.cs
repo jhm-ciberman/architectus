@@ -1,13 +1,21 @@
-using System.Diagnostics;
-
 namespace Architectus;
 
 public class Grid
 {
-    private readonly GridCell[] _cells;
+    private readonly Dictionary<Vector2Int, GridCell> _cells;
+
+    /// <summary>
+    /// Gets the position of the grid in the floor plan.
+    /// </summary>
+    public Vector2Int Position { get; }
 
     /// <summary>
     /// Gets the number of columns and rows in the grid.
+    /// </summary>
+    public Vector2Int SizeInCells { get; }
+
+    /// <summary>
+    /// Gets the size of the grid (in the floor plan).
     /// </summary>
     public Vector2Int Size { get; }
 
@@ -17,34 +25,52 @@ public class Grid
     public float AverageAspectRatio { get; }
 
     /// <summary>
+    /// Get the column widths.
+    /// </summary>
+    public int[] ColumnWidths { get; }
+
+    /// <summary>
+    /// Gets the row heights.
+    /// </summary>
+    public int[] RowHeights { get; }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="Grid"/> class.
     /// </summary>
+    /// <param name="floorPlan">The floor plan that this grid belongs to.</param>
+    /// <param name="position">The position of the grid in the floor plan.</param>
     /// <param name="columnsWidths">The width of each column in the grid.</param>
     /// <param name="rowsHeights">The height of each row in the grid.</param>
-    public Grid(int[] columnsWidths, int[] rowsHeights)
+    public Grid(Vector2Int position, int[] columnsWidths, int[] rowsHeights)
     {
-        this.Size = new Vector2Int(columnsWidths.Length, rowsHeights.Length);
-        this._cells = new GridCell[columnsWidths.Length * rowsHeights.Length];
+        this.Position = position;
+        this.ColumnWidths = columnsWidths;
+        this.RowHeights = rowsHeights;
+        this.SizeInCells = new Vector2Int(columnsWidths.Length, rowsHeights.Length);
+        int cellsCount = columnsWidths.Length * rowsHeights.Length;
+        this._cells = new Dictionary<Vector2Int, GridCell>(cellsCount);
 
-        Vector2Int position = Vector2Int.Zero;
+        Vector2Int cellPos = position;
         for (int row = 0; row < rowsHeights.Length; row++)
         {
             for (int col = 0; col < columnsWidths.Length; col++)
             {
-                var cell = new GridCell(new Vector2Int(col, row), position, new Vector2Int(columnsWidths[col], rowsHeights[row]));
-                this._cells[row * columnsWidths.Length + col] = cell;
-                position.X += columnsWidths[col];
+                var cell = new GridCell(this, new Vector2Int(col, row), cellPos, new Vector2Int(columnsWidths[col], rowsHeights[row]));
+                this._cells.Add(cell.Coordinate, cell);
+                cellPos.X += columnsWidths[col];
             }
-            position.X = 0;
-            position.Y += rowsHeights[row];
+            cellPos.X = position.X;
+            cellPos.Y += rowsHeights[row];
         }
 
+        this.Size = new Vector2Int(columnsWidths.Sum(), rowsHeights.Sum());
+
         float totalAspectRatio = 0;
-        for (int i = 0; i < this._cells.Length; i++)
+        foreach (var cell in this._cells.Values)
         {
-            totalAspectRatio += this._cells[i].Size.X / (float)this._cells[i].Size.Y;
+            totalAspectRatio += cell.Size.X / (float)cell.Size.Y;
         }
-        totalAspectRatio /= this._cells.Length;
+        totalAspectRatio /= this._cells.Count;
         if (totalAspectRatio < 1)
         {
             totalAspectRatio = 1 / totalAspectRatio;
@@ -53,36 +79,49 @@ public class Grid
     }
 
     /// <summary>
-    /// Gets the cell at the specified grid coordinate.
+    /// Gets the cell at the specified grid coordinate or null if the coordinate is out of bounds
+    /// or there is no cell at the specified coordinate.
     /// </summary>
     /// <param name="coordinate">The grid coordinate.</param>
     /// <returns>The cell at the specified grid coordinate.</returns>
-    public GridCell GetCell(Vector2Int coordinate)
+    public GridCell? GetCell(Vector2Int coordinate)
     {
-        return this._cells[coordinate.X + coordinate.Y * this.Size.X];
+        if (coordinate.X < 0 || coordinate.X >= this.SizeInCells.X || coordinate.Y < 0 || coordinate.Y >= this.SizeInCells.Y)
+        {
+            return null;
+        }
+
+        return this._cells.TryGetValue(coordinate, out var cell) ? cell : null;
     }
 
     /// <summary>
-    /// Gets the cell at the specified grid coordinate.
+    /// Gets the cell at the specified grid coordinate or null if the coordinate is out of bounds
+    /// or there is no cell at the specified coordinate.
     /// </summary>
     /// <param name="x">The x coordinate.</param>
     /// <param name="y">The y coordinate.</param>
     /// <returns>The cell at the specified grid coordinate.</returns>
-    public GridCell GetCell(int x, int y)
+    public GridCell? GetCell(int x, int y)
     {
-        return this._cells[x + y * this.Size.X];
+        return this.GetCell(new Vector2Int(x, y));
     }
-
-    public GridCell this[Vector2Int position] => this.GetCell(position);
 
     /// <summary>
     /// Gets all the cells in the grid.
     /// </summary>
-    /// <returns>All the cells in the grid.</returns>
-    public IEnumerable<GridCell> GetCells()
+    public IEnumerable<GridCell> Cells => this._cells.Values;
+
+    /// <summary>
+    /// Get the number of cells in the grid.
+    /// </summary>
+    public int CellsCount => this._cells.Count;
+
+    /// <summary>
+    /// Removes the cell at the specified grid coordinate.
+    /// </summary>
+    /// <param name="coordinate">The grid coordinate.</param>
+    public void RemoveCell(Vector2Int coordinate)
     {
-        return this._cells;
+        this._cells.Remove(coordinate);
     }
 }
-
-
