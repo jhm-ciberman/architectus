@@ -90,7 +90,6 @@ public class HouseGenerator
         house = new HousePlan(this.PlotSize);
         var floor = house.AddFloor();
         floor.Entrance = entrancePosition;
-        floor.Grid = grid;
         foreach (var roomRequest in roomsPlacer.RoomRequests)
         {
             var room = new Room(roomRequest.Type);

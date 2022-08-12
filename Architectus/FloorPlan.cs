@@ -152,8 +152,6 @@ public class FloorPlan
 
     public Vector2Int Entrance { get; set; } = new Vector2Int(0, 0);
 
-    public Grid? Grid { get; set; }
-
     /// <summary>
     /// Gets a room at the given position or null if there is no room at the given position.
     /// </summary>
