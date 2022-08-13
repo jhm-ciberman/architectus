@@ -141,6 +141,12 @@ public struct Vector2Int : IEquatable<Vector2Int>
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector2Int operator -(Vector2Int a)
+    {
+        return new Vector2Int(-a.X, -a.Y);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator ==(Vector2Int lhs, Vector2Int rhs)
     {
         return lhs.X == rhs.X && lhs.Y == rhs.Y;

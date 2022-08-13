@@ -101,6 +101,23 @@ public class HouseGenerator
         }
 
         Console.WriteLine($"Average aspect ratio: {grid.AverageAspectRatio}");
+
+        var area = maxHouseArea.X * maxHouseArea.Y;
+        var shapeGenerator = new ShapeGenerator(this._random)
+        {
+            PlotSize = this.PlotSize,
+            MinArea = (int)(area * 0.5f),
+            Type = ShapeType.TwoRects,
+            MainRectMinArea = (int)(area * 0.3f),
+            SecondaryRectMinArea = (int)(area * 0.1f),
+            MainRectMinSize = new Vector2Int(
+                (int)(this.PlotSize.X * 0.3f),
+                (int)(this.PlotSize.Y * 0.3f)),
+        };
+
+        if (!shapeGenerator.TryGenerateShape(out var shape)) return false;
+        floor.Shape = shape;
+
         return true;
     }
 }

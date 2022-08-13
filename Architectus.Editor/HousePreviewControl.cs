@@ -116,36 +116,14 @@ namespace Architectus.Editor
                 g.DrawRectangle(this._wallPen, new RectangleF(pos.X + 2, pos.Y + 2, cellSize - 4, cellSize - 4));
             }
 
-            Grid? grid = floor.Grid;
-            if (grid != null)
+            HouseShape? shape = floor.Shape;
+            if (shape != null)
             {
-                float xxx, yyy;
-                // Draw lines for grid.
-                int x = 0;
-                foreach (var w in grid.ColumnWidths)
+                foreach (var rect in shape.Rectangles)
                 {
-                    xxx = coords.X + (grid.Position.X + x) * cellSize;
-                    yyy = coords.Y + grid.Position.Y * cellSize;
-                    g.DrawLine(this._wallPen, new PointF(xxx, yyy), new PointF(xxx, yyy + grid.Size.Y * cellSize));
-                    x += w;
+                    var pos = coords + rect.Position * cellSize;
+                    g.DrawRectangle(this._wallPen, new RectangleF(pos.X + 2, pos.Y + 2, rect.Size.X * cellSize - 4, rect.Size.Y * cellSize - 4));
                 }
-                // Draw bottom line
-                xxx = coords.X + grid.Position.X * cellSize;
-                yyy = coords.Y + (grid.Position.Y + grid.Size.Y) * cellSize;
-                g.DrawLine(this._wallPen, new PointF(xxx, yyy), new PointF(xxx + grid.Size.X * cellSize, yyy));
-
-                int y = 0;
-                foreach (var h in grid.RowHeights)
-                {
-                    yyy = coords.Y + (grid.Position.Y + y) * cellSize;
-                    xxx = coords.X + grid.Position.X * cellSize;
-                    g.DrawLine(this._wallPen, new PointF(xxx, yyy), new PointF(xxx + grid.Size.X * cellSize, yyy));
-                    y += h;
-                }
-                // Draw right line
-                xxx = coords.X + (grid.Position.X + grid.Size.X) * cellSize;
-                yyy = coords.Y + grid.Position.Y * cellSize;
-                g.DrawLine(this._wallPen, new PointF(xxx, yyy), new PointF(xxx, yyy + grid.Size.Y * cellSize));
             }
         }
     }

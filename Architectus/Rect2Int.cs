@@ -23,6 +23,11 @@ public struct Rect2Int
         this.Size = new Vector2Int(width, height);
     }
 
+    public Rect2Int Translate(Vector2Int translation)
+    {
+        return new Rect2Int(this.Position + translation, this.Size);
+    }
+
     public Rect2Int Union(Rect2Int other)
     {
         var min = Vector2Int.Min(this.Position, other.Position);

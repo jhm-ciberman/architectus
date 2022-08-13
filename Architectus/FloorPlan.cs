@@ -145,6 +145,8 @@ public class FloorPlan
     /// </summary>
     public IEnumerable<Room> Rooms => this._rooms;
 
+    public HouseShape? Shape { get; set; } = null;
+
     /// <summary>
     /// Gets the count of rooms on the floor.
     /// </summary>
