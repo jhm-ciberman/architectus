@@ -9,8 +9,8 @@ namespace Architectus.Editor
     /// </summary>
     public class HousePreviewControl : Drawable
     {
-        private HousePlan? _house = null;
-        public HousePlan? House
+        private House? _house = null;
+        public House? House
         {
             get => this._house;
             set
@@ -22,7 +22,7 @@ namespace Architectus.Editor
             }
         }
 
-        public BindableBinding<HousePreviewControl, HousePlan?> FloorBinding { get; }
+        public BindableBinding<HousePreviewControl, House?> FloorBinding { get; }
 
         private readonly int _cellSize = 20; // The size of each cell in the grid (in pixels).
 
@@ -55,7 +55,7 @@ namespace Architectus.Editor
         /// </summary>
         public HousePreviewControl()
         {
-            this.FloorBinding = new BindableBinding<HousePreviewControl, HousePlan?>(this, 
+            this.FloorBinding = new BindableBinding<HousePreviewControl, House?>(this, 
                 self => self.House, 
                 (self, value) => self.House = value);
         }
@@ -114,38 +114,6 @@ namespace Architectus.Editor
             {
                 var pos = coords + floor.Entrance * cellSize;
                 g.DrawRectangle(this._wallPen, new RectangleF(pos.X + 2, pos.Y + 2, cellSize - 4, cellSize - 4));
-            }
-
-            Grid? grid = floor.Grid;
-            if (grid != null)
-            {
-                float xxx, yyy;
-                // Draw lines for grid.
-                int x = 0;
-                foreach (var w in grid.ColumnWidths)
-                {
-                    xxx = coords.X + (grid.Position.X + x) * cellSize;
-                    yyy = coords.Y + grid.Position.Y * cellSize;
-                    g.DrawLine(this._wallPen, new PointF(xxx, yyy), new PointF(xxx, yyy + grid.Size.Y * cellSize));
-                    x += w;
-                }
-                // Draw bottom line
-                xxx = coords.X + grid.Position.X * cellSize;
-                yyy = coords.Y + (grid.Position.Y + grid.Size.Y) * cellSize;
-                g.DrawLine(this._wallPen, new PointF(xxx, yyy), new PointF(xxx + grid.Size.X * cellSize, yyy));
-
-                int y = 0;
-                foreach (var h in grid.RowHeights)
-                {
-                    yyy = coords.Y + (grid.Position.Y + y) * cellSize;
-                    xxx = coords.X + grid.Position.X * cellSize;
-                    g.DrawLine(this._wallPen, new PointF(xxx, yyy), new PointF(xxx + grid.Size.X * cellSize, yyy));
-                    y += h;
-                }
-                // Draw right line
-                xxx = coords.X + (grid.Position.X + grid.Size.X) * cellSize;
-                yyy = coords.Y + grid.Position.Y * cellSize;
-                g.DrawLine(this._wallPen, new PointF(xxx, yyy), new PointF(xxx, yyy + grid.Size.Y * cellSize));
             }
         }
     }

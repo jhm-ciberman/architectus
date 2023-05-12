@@ -1,113 +1,9 @@
+using System;
+using System.Collections.Generic;
+
 namespace Architectus;
 
-public enum RoomType : byte
-{
-    Garden,
-    Bedroom,
-    Kitchen,
-    LivingRoom,
-}
-
-public class HousePlan
-{
-    private readonly List<FloorPlan> _floors = new();
-
-    /// <summary>
-    /// Gets a list of floors.
-    /// </summary>
-    public IReadOnlyList<FloorPlan> Floors => this._floors;
-
-    /// <summary>
-    /// Gets the size of the house.
-    /// </summary>
-    public Vector2Int Size { get; }
-
-    /// <summary>
-    /// Gets or sets the entrance position.
-    /// </summary>
-    public Vector2Int EntrancePosition { get; set; } = new Vector2Int(0, 0);
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="HousePlan"/> class.
-    /// </summary>
-    /// <param name="size">The size of the house.</param>
-    public HousePlan(Vector2Int size)
-    {
-        this.Size = size;
-    }
-
-    /// <summary>
-    /// Adds a floor to the house.
-    /// </summary>
-    /// <returns>The floor that was added.</returns>
-    internal FloorPlan AddFloor()
-    {
-        var floor = new FloorPlan(this, this._floors.Count);
-        this._floors.Add(floor);
-        return floor;
-    }
-}
-
-/// <summary>
-/// Represents a room in a house.
-/// </summary>
-public class Room
-{
-    /// <summary>
-    /// Gets or sets the room's type.
-    /// </summary>
-    public RoomType Type { get; } = RoomType.Garden;
-
-    /// <summary>
-    /// Gets the bounding box of the room.
-    /// </summary>
-    public Rect2Int BoundingBox { get; private set; }
-
-    public Grid? Grid { get; }
-
-    private readonly List<Vector2Int> _cells = new();
-
-    /// <summary>
-    /// Gets a list of cells that are part of the room.
-    /// </summary>
-    public IEnumerable<Vector2Int> Cells => this._cells;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Room"/> class.
-    /// </summary>
-    /// <param name="type">The room's type.</param>
-    public Room(RoomType type)
-    {
-        this.Type = type;
-    }
-
-    /// <summary>
-    /// Adds the given rectangle to the room.
-    /// </summary>
-    /// <param name="position">The position of the rectangle.</param>
-    /// <param name="size">The size of the rectangle.</param>
-    public void AddRectangle(Vector2Int position, Vector2Int size)
-    {
-        if (this._cells.Count == 0)
-        {
-            this.BoundingBox = new Rect2Int(position, size);
-        }
-        else
-        {
-            this.BoundingBox = this.BoundingBox.Union(new Rect2Int(position, size));
-        }
-
-        for (var x = position.X; x < position.X + size.X; x++)
-        {
-            for (var y = position.Y; y < position.Y + size.Y; y++)
-            {
-                this._cells.Add(new Vector2Int(x, y));
-            }
-        }
-    }
-}
-
-public class FloorPlan
+public class Floor
 {
     private readonly Room?[,] _roomsMap;
 
@@ -116,7 +12,7 @@ public class FloorPlan
     /// <summary>
     /// Gets the house that owns this floor.
     /// </summary>
-    public HousePlan House { get; }
+    public House House { get; }
 
     /// <summary>
     /// Gets the floor's number. (zero-based)
@@ -129,11 +25,11 @@ public class FloorPlan
     public Vector2Int Size => this.House.Size;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="FloorPlan"/> class.
+    /// Initializes a new instance of the <see cref="Floor"/> class.
     /// </summary>
     /// <param name="house">The house that owns this floor.</param>
     /// <param name="floorNumber">The floor's number.</param>
-    public FloorPlan(HousePlan house, int floorNumber)
+    public Floor(House house, int floorNumber)
     {
         this.House = house;
         this.FloorNumber = floorNumber;
@@ -151,8 +47,6 @@ public class FloorPlan
     public int RoomCount => this._rooms.Count;
 
     public Vector2Int Entrance { get; set; } = new Vector2Int(0, 0);
-
-    public Grid? Grid { get; set; }
 
     /// <summary>
     /// Gets a room at the given position or null if there is no room at the given position.

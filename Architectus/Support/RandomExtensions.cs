@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace Architectus;
 
 public static class RandomExtensions
@@ -9,6 +13,11 @@ public static class RandomExtensions
 
     public static T Choose<T>(this Random random, IEnumerable<T> values)
     {
+        if (values is IReadOnlyList<T> list)
+        {
+            return Choose(random, list);
+        }
+        
         return Choose(random, values.ToList());
     }
 }
