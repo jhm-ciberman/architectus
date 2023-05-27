@@ -8,4 +8,9 @@
     <ObjectPath>..\obj\</ObjectPath>
   </PropertyGroup>
 
+  <ItemGroup>
+    <!-- Add global implicit using to the project -->
+    <Using Include="System.Numerics" />  
+  </ItemGroup>
+
 </Project>

@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace Architectus;
 
 public static class RandomExtensions
@@ -19,5 +15,14 @@ public static class RandomExtensions
         }
         
         return Choose(random, values.ToList());
+    }
+
+    public static double NextGaussianDouble(this Random random, double mean, double standardDeviation)
+    {
+        double u1 = 1.0d - random.NextDouble();
+        double u2 = 1.0d - random.NextDouble();
+        double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
+        double randNormal = mean + standardDeviation * randStdNormal;
+        return randNormal;
     }
 }

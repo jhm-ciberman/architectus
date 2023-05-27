@@ -1,5 +1,3 @@
-using System.Numerics;
-
 namespace Architectus;
 
 public struct Rect2Int
