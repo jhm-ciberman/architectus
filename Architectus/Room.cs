@@ -6,53 +6,48 @@ namespace Architectus;
 public class Room
 {
     /// <summary>
+    /// Gets the floor that owns this room.
+    /// </summary>
+    public Floor Floor { get; }
+
+    /// <summary>
     /// Gets or sets the room's type.
     /// </summary>
     public RoomType Type { get; } = RoomType.Garden;
 
     /// <summary>
-    /// Gets the bounding box of the room.
+    /// Gets the <see cref="RoomBounds"/> that contains all cells of the room.
     /// </summary>
-    public Rect2Int BoundingBox { get; private set; }
+    public RoomBounds Bounds { get; set; }
 
-    private readonly List<Vector2Int> _cells = new();
+    private readonly List<RoomBounds> _carvings = new();
 
     /// <summary>
-    /// Gets a list of cells that are part of the room.
+    /// Gets a list of all carvings in the room.
     /// </summary>
-    public IEnumerable<Vector2Int> Cells => this._cells;
+    public IReadOnlyList<RoomBounds> Carvings => this._carvings;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Room"/> class.
     /// </summary>
+    /// <param name="floor">The floor that owns this room.</param>
     /// <param name="type">The room's type.</param>
-    public Room(RoomType type)
+    /// <param name="bounds">The <see cref="RoomBounds"/> that contains all cells of the room.</param>
+    public Room(Floor floor, RoomType type, RoomBounds bounds)
     {
+        this.Floor = floor;
         this.Type = type;
+        this.Bounds = bounds;
     }
 
     /// <summary>
-    /// Adds the given rectangle to the room.
+    /// Gets whether the room contains the given position.
     /// </summary>
-    /// <param name="position">The position of the rectangle.</param>
-    /// <param name="size">The size of the rectangle.</param>
-    public void AddRectangle(Vector2Int position, Vector2Int size)
+    /// <param name="position">The position to check.</param>
+    /// <returns>Whether the room contains the given position.</returns>
+    public bool Contains(Vector2Int position)
     {
-        if (this._cells.Count == 0)
-        {
-            this.BoundingBox = new Rect2Int(position, size);
-        }
-        else
-        {
-            this.BoundingBox = this.BoundingBox.Union(new Rect2Int(position, size));
-        }
-
-        for (var x = position.X; x < position.X + size.X; x++)
-        {
-            for (var y = position.Y; y < position.Y + size.Y; y++)
-            {
-                this._cells.Add(new Vector2Int(x, y));
-            }
-        }
+        return this.Bounds.Contains(position);
     }
+    
 }

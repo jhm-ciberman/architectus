@@ -9,8 +9,8 @@ namespace Architectus.Editor
     /// </summary>
     public class HousePreviewControl : Drawable
     {
-        private House? _house = null;
-        public House? House
+        private HouseLot? _house = null;
+        public HouseLot? House
         {
             get => this._house;
             set
@@ -22,7 +22,7 @@ namespace Architectus.Editor
             }
         }
 
-        public BindableBinding<HousePreviewControl, House?> FloorBinding { get; }
+        public BindableBinding<HousePreviewControl, HouseLot?> FloorBinding { get; }
 
         private readonly int _cellSize = 20; // The size of each cell in the grid (in pixels).
 
@@ -36,26 +36,24 @@ namespace Architectus.Editor
 
         private readonly Brush _fontBrush = Brushes.DarkSlateGray;
 
-        private readonly Color[] _roomColors = new[]
+        private static Color GetRoomColor(Room room)
         {
-            Colors.Salmon,
-            Colors.SandyBrown,
-            Colors.LightBlue,
-            Colors.Thistle,
-            Colors.PaleGoldenrod,
-            Colors.PaleTurquoise,
-            Colors.PaleVioletRed,
-            Colors.PapayaWhip,
-            Colors.PeachPuff,
-            Colors.Peru,
-        };
+            return room.Type switch
+            {
+                RoomType.Garden => Colors.LightGreen,
+                RoomType.Bedroom => Colors.LightPink,
+                RoomType.Kitchen => Colors.LightYellow,
+                RoomType.LivingRoom => Colors.LightBlue,
+                _ => Colors.SlateGray,
+            };
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HousePreviewControl"/> class.
         /// </summary>
         public HousePreviewControl()
         {
-            this.FloorBinding = new BindableBinding<HousePreviewControl, House?>(this, 
+            this.FloorBinding = new BindableBinding<HousePreviewControl, HouseLot?>(this, 
                 self => self.House, 
                 (self, value) => self.House = value);
         }
@@ -83,15 +81,11 @@ namespace Architectus.Editor
                     if (room != null)
                     {
                         var rect = new RectangleF(coords.X + x * cellSize, coords.Y + y * cellSize, cellSize, cellSize);
-                        var color = room.Type == RoomType.Garden
-                            ? this._grassColor
-                            : this._roomColors[room.GetHashCode() % this._roomColors.Length];
+                        var color = GetRoomColor(room);
                         g.FillRectangle(color, rect);
                     }
                 }
             }
-
-
 
             // Draw grid lines.
             for (int x = 0; x <= size.X; x++)
@@ -106,7 +100,7 @@ namespace Architectus.Editor
 
             foreach (var room in floor.Rooms)
             {
-                var pos = room.BoundingBox.Center;
+                var pos = room.Bounds.Center;
                 var str = room.Type.ToString()[0];
                 g.DrawText(this._font, this._fontBrush, coords.X + pos.X * cellSize, coords.Y + pos.Y * cellSize, str.ToString());
             }

@@ -25,4 +25,12 @@ public static class RandomExtensions
         double randNormal = mean + standardDeviation * randStdNormal;
         return randNormal;
     }
+
+    public static double NextNormalizedDouble(this Random random, double standardDeviation = 0.15d)
+    {
+        const double mean = 0.5d;
+        double randNormal = random.NextGaussianDouble(mean, standardDeviation);
+        double normalizedValue = Math.Max(0, Math.Min(1, randNormal));
+        return normalizedValue;
+    }
 }

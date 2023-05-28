@@ -46,7 +46,11 @@ namespace Architectus.Editor
 			var heightStepper = new NumericStepper { MinValue = 1, MaxValue = 100, Value = 10 };
             heightStepper.ValueBinding.BindDataContext((HousePreviewViewModel vm) => vm.PlotHeight);
 
-            this._housePreviewControl = new HousePreviewControl { Size = new Size(400, 400) };
+            this._housePreviewControl = new HousePreviewControl 
+			{ 
+				Size = new Size(400, 400),
+				BackgroundColor = Colors.White,	
+			};
             this._housePreviewControl.FloorBinding.BindDataContext((HousePreviewViewModel vm) => vm.House);
 
 			this.Content = new StackLayout

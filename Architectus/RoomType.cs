@@ -2,7 +2,7 @@ namespace Architectus;
 
 public enum RoomType : byte
 {
-    Garden,
+    Garden = 0,
     Bedroom,
     Kitchen,
     LivingRoom,

@@ -1,6 +1,6 @@
 namespace Architectus;
 
-public class House
+public class HouseLot
 {
     private readonly List<Floor> _floors = new();
 
@@ -9,23 +9,33 @@ public class House
     /// </summary>
     public IReadOnlyList<Floor> Floors => this._floors;
 
+    public Floor GroundFloor => this._floors[0];
+
     /// <summary>
     /// Gets the size of the house.
     /// </summary>
     public Vector2Int Size { get; }
 
     /// <summary>
-    /// Gets or sets the entrance position.
-    /// </summary>
-    public Vector2Int EntrancePosition { get; set; } = new Vector2Int(0, 0);
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="House"/> class.
+    /// Initializes a new instance of the <see cref="HouseLot"/> class.
     /// </summary>
     /// <param name="size">The size of the house.</param>
-    public House(Vector2Int size)
+    public HouseLot(Vector2Int size)
     {
         this.Size = size;
+
+        var ground = new Floor(this, 0);
+        this._floors.Add(ground);
+    }
+
+    /// <summary>
+    /// Gets a floor by its number.
+    /// </summary>
+    /// <param name="floorNumber">The floor's number.</param>
+    /// <returns>The floor.</returns>
+    public Floor GetFloor(int floorNumber)
+    {
+        return this._floors[floorNumber];
     }
 
     /// <summary>

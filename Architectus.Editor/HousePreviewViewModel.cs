@@ -8,7 +8,7 @@ public class HousePreviewViewModel : ObservableObject
 
     private int _plotWidth = 10;
     private int _plotHeight = 10;
-    public House House { get; private set; } = null!;
+    public HouseLot House { get; private set; } = null!;
 
     public HousePreviewViewModel(HouseGenerator generator)
     {

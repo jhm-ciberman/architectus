@@ -9,7 +9,7 @@ public class Floor
     /// <summary>
     /// Gets the house that owns this floor.
     /// </summary>
-    public House House { get; }
+    public HouseLot House { get; }
 
     /// <summary>
     /// Gets the floor's number. (zero-based)
@@ -21,12 +21,15 @@ public class Floor
     /// </summary>
     public Vector2Int Size => this.House.Size;
 
+
+    public RoomBounds Bounds => new RoomBounds(Vector2Int.Zero, this.Size);
+
     /// <summary>
     /// Initializes a new instance of the <see cref="Floor"/> class.
     /// </summary>
     /// <param name="house">The house that owns this floor.</param>
     /// <param name="floorNumber">The floor's number.</param>
-    public Floor(House house, int floorNumber)
+    public Floor(HouseLot house, int floorNumber)
     {
         this.House = house;
         this.FloorNumber = floorNumber;
@@ -62,26 +65,33 @@ public class Floor
     /// <summary>
     /// Adds a room to the floor.
     /// </summary>
-    /// <param name="room">The room to add.</param>
-    public void AddRoom(Room room)
+    public Room AddRoom(RoomBounds bounds, RoomType type)
     {
+        var room = new Room(this, type, bounds);
+        this.AssignRectangle(room, bounds);
         this._rooms.Add(room);
-        foreach (var cell in room.Cells)
-        {
-            this._roomsMap[cell.X, cell.Y] = room;
-        }
+        return room;
     }
 
-    /// <summary>
-    /// Assigns the tiles in the given rectangle to the given room.
-    /// </summary>
-    /// <param name="room">The room to assign to.</param>
-    /// <param name="position">The position of the rectangle.</param>
-    /// <param name="size">The size of the rectangle.</param>
-    /// <exception cref="ArgumentException">Thrown if the rectangle is out of bounds.</exception>
-    /// <exception cref="InvalidOperationException">Thrown if some cell is already assigned to a room.</exception>
-    internal void AssignTilesToRoom(Room room, Vector2Int position, Vector2Int size)
+    public bool RectIsEmpty(RoomBounds bounds)
     {
+        for (var x = bounds.Position.X; x < bounds.Position.X + bounds.Size.X; x++)
+        {
+            for (var y = bounds.Position.Y; y < bounds.Position.Y + bounds.Size.Y; y++)
+            {
+                if (this._roomsMap[x, y] != null)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private void AssignRectangle(Room room, RoomBounds area)
+    {
+        var position = area.Position;
+        var size = area.Size;
         if (position.X < 0 || position.X + size.X > this.Size.X || position.Y < 0 || position.Y + size.Y > this.Size.Y)
         {
             throw new ArgumentException("The rectangle is out of bounds.", nameof(position));

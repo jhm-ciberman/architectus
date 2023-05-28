@@ -1,0 +1,12 @@
+I'm designing a life simulator game like the sims. In the game all the houses will be generated procedurally when the world is generated. The game is 3d but uses a 2d grid to represent the floorplans, like in the sims 1. I want to generate meaningful houses according to plot size, wealth, family members, style, etc. 
+I'm using C# and I have advanced knowledge and experience with algorithms and data structures. 
+
+My idea is to have varios kinds of "Templates" for example TwoRoomTemplate, SingleRoomTemplate, MultiBedroomHallwayTemplate, Circular hallway template, and so on. Each Template class having a CanExecute method that takes a number of constraints as arguments, like the plot size, wealth, family members, type of building (residencial or commercial), etc as a HouseRequirements object. Then a list of all the posible templates that can be executed is made and then one of the templates is choosen at random and executed. The templates will follow always a similar structure and use space partitioning to create rooms.  
+It can have an execute method that takes the same requirements object and a HouseBuilder object that have utility methods to build the house rooms.
+
+As an advanced scenario, I'm also thinking of having HouseComponents. Components are each one different and receive in the constructor different parameters, depending of the essence of the component itself. For example a hall with two bedrooms will be a house component a hall with one bedroom will be another component, a kitchen in L shape with be another component, etc. House templates could reuse components and pick in some cases random components to give more variety. This way I can make complex templates that reuse components (in a similar fashion to designing UI components in a web for example, where you can reuse components to make a complex page)
+
+For example a BedroomComponent could take as inputs the exact size, the door location, the style of the bedroom (children, adult, classic, modern, etc) etc. 
+
+Do you understand the idea? Can you make a prototype in C#? (Pseudocode, only for me to review before starting to code it myself)
+I'm interested in the implementation of one Template in particular. You can invent your own kind of template. I'm interesting in a template calling other components.
