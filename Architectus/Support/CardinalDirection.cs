@@ -1,4 +1,4 @@
-namespace Architectus;
+namespace Architectus.Support;
 
 /// <summary>
 /// Represents a cardinal direction.

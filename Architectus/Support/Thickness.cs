@@ -1,4 +1,4 @@
-namespace Architectus;
+namespace Architectus.Support;
 
 public struct Thickness
 {
@@ -6,11 +6,11 @@ public struct Thickness
     public int Right { get; set; }
     public int Top { get; set; }
     public int Bottom { get; set; }
-    public Vector2Int Total => new Vector2Int(Left + Right, Top + Bottom);
-    public Vector2Int TopLeft => new Vector2Int(Left, Top);
-    public Vector2Int TopRight => new Vector2Int(Right, Top);
-    public Vector2Int BottomLeft => new Vector2Int(Left, Bottom);
-    public Vector2Int BottomRight => new Vector2Int(Right, Bottom);
+    public Vector2Int Total => new Vector2Int(this.Left + this.Right, this.Top + this.Bottom);
+    public Vector2Int TopLeft => new Vector2Int(this.Left, this.Top);
+    public Vector2Int TopRight => new Vector2Int(this.Right, this.Top);
+    public Vector2Int BottomLeft => new Vector2Int(this.Left, this.Bottom);
+    public Vector2Int BottomRight => new Vector2Int(this.Right, this.Bottom);
 
     public Thickness(int left, int right, int top, int bottom)
     {

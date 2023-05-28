@@ -1,4 +1,4 @@
-namespace Architectus;
+namespace Architectus.Support;
 
 public class WeightedRandom<T>
 {
@@ -19,11 +19,11 @@ public class WeightedRandom<T>
 
     private readonly List<Item> _weightedValues;
 
-    public WeightedRandom(int seed) : this(new System.Random(seed)) { }
+    public WeightedRandom(int seed) : this(new Random(seed)) { }
 
-    public WeightedRandom() : this(new System.Random()) { }
+    public WeightedRandom() : this(new Random()) { }
 
-    public WeightedRandom(System.Random random)
+    public WeightedRandom(Random random)
     {
         this._random = random;
         this._weightedValues = new List<Item>();

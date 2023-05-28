@@ -1,3 +1,5 @@
+using Architectus.Support;
+
 namespace Architectus;
 
 public abstract class HouseTemplate
@@ -17,20 +19,15 @@ public abstract class HouseTemplate
     }
 }
 
-public class TwoRoomHouseTemplate
+public class TwoRoomHouseTemplate : HouseTemplate
 {
-    public bool CanExecute(Vector2Int plotSize)
+    public override bool CanExecute(Vector2Int plotSize)
     {
         return plotSize.X >= 4 && plotSize.Y >= 3;
     }
 
-    public HouseLot Execute(Vector2Int plotSize, Random random)
+    protected override HouseLot ExecuteCore(Vector2Int plotSize, Random random)
     {
-        if (!this.CanExecute(plotSize))
-        {
-            throw new ArgumentException("Cannot execute template.");
-        }
-
         var lot = new HouseLot(plotSize);
         var floor = lot.GroundFloor;
         // Entrance always asumed to be on the left side of the plot.

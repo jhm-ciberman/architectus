@@ -1,14 +1,13 @@
 ﻿using System;
 using Eto.Forms;
 
-namespace Architectus.Editor.Wpf
+namespace Architectus.Editor.Wpf;
+
+public class Program
 {
-	class Program
-	{
-		[STAThread]
-		public static void Main(string[] args)
-		{
-			new Application(Eto.Platforms.Wpf).Run(new MainForm());
-		}
-	}
+    [STAThread]
+    public static void Main()
+    {
+        new Application(Eto.Platforms.Wpf).Run(new MainForm());
+    }
 }

@@ -1,4 +1,4 @@
-using Architectus;
+using Architectus.Support;
 
 namespace Architectus.Editor;
 
@@ -39,12 +39,15 @@ public class HousePreviewViewModel : ObservableObject
     {
         this._generator.PlotSize = new Vector2Int(this._plotWidth, this._plotHeight);
 
-        if (this._generator.TryGenerate(out var house)) {
+        if (this._generator.TryGenerate(out var house))
+        {
             this.House = house;
-        } else {
+        }
+        else
+        {
             this.House = null!;
         }
 
-        this.OnPropertyChanged(nameof(House));
+        this.OnPropertyChanged(nameof(this.House));
     }
 }

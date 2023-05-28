@@ -1,3 +1,5 @@
+using Architectus.Support;
+
 namespace Architectus;
 
 public class Floor
@@ -92,7 +94,7 @@ public class Floor
         var size = area.Size;
         if (position.X < 0 || position.X + size.X > this.Size.X || position.Y < 0 || position.Y + size.Y > this.Size.Y)
         {
-            throw new ArgumentException("The rectangle is out of bounds.", nameof(position));
+            throw new ArgumentException("The rectangle is out of bounds.", nameof(area));
         }
 
         for (var x = position.X; x < position.X + size.X; x++)

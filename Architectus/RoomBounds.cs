@@ -1,5 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
+using Architectus.Support;
 using CommunityToolkit.Diagnostics;
 
 namespace Architectus;
@@ -130,9 +129,9 @@ public struct RoomBounds
     }
 
     /// <summary>
-    /// Split the bounds into two parts, with the left part having a minimum width of <paramref name="minLeft"/> and 
+    /// Split the bounds into two parts, with the left part having a minimum width of <paramref name="minLeft"/> and
     /// the right part having a minimum width of <paramref name="minRight"/>. The ratio of the left part to the right
-    /// part is <paramref name="ratio"/> (without the minimum widths). 
+    /// part is <paramref name="ratio"/> (without the minimum widths).
     /// </summary>
     /// <param name="minLeft">The minimum width of the left part.</param>
     /// <param name="minRight">The minimum width of the right part.</param>

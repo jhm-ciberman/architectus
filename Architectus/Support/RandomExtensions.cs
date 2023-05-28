@@ -1,6 +1,6 @@
 using CommunityToolkit.Diagnostics;
 
-namespace Architectus;
+namespace Architectus.Support;
 
 public static class RandomExtensions
 {
@@ -12,11 +12,9 @@ public static class RandomExtensions
     public static T Choose<T>(this Random random, IEnumerable<T> values)
     {
         if (values is IReadOnlyList<T> list)
-        {
-            return Choose(random, list);
-        }
-        
-        return Choose(random, values.ToList());
+            return random.Choose(list);
+
+        return random.Choose(values.ToList());
     }
 
     public static double NextGaussianDouble(this Random random, double mean, double standardDeviation)
@@ -55,9 +53,7 @@ public static class RandomExtensions
         double value = random.NextGaussianRatio(standardDeviation);
 
         if (value < 0.5d)
-        {
             value = RemapRange(value, 0, 0.5d, 0, bias);
-        }
         else
         {
             value = RemapRange(value, 0.5d, 1, bias, 1);

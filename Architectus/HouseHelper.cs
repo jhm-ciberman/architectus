@@ -1,3 +1,4 @@
+using Architectus.Support;
 using CommunityToolkit.Diagnostics;
 
 namespace Architectus;
@@ -6,7 +7,7 @@ public static class HouseHelper
 {
     /// <summary>
     /// Deflates the bounds to a random size between minSize and maxSize. The room will be positioned
-    /// according to the position strategy. The room, by convention, will be positioned 
+    /// according to the position strategy. The room, by convention, will be positioned
     /// prioritizing the right of the bounds because the entrance is assumed to be on the left side of the plot.
     /// </summary>
     /// <param name="random">The random number generator to use.</param>
@@ -36,7 +37,7 @@ public static class HouseHelper
         var percentX = biasX.HasValue
             ? random.NextBiasedGaussianRatio(biasX.Value)
             : random.NextDouble();
-        
+
         var percentY = biasY.HasValue
             ? random.NextBiasedGaussianRatio(biasY.Value)
             : random.NextDouble();

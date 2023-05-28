@@ -1,3 +1,5 @@
+using Architectus.Support;
+
 namespace Architectus;
 
 /// <summary>
@@ -20,7 +22,7 @@ public class Room
     /// </summary>
     public RoomBounds Bounds { get; private set; }
 
-    private HashSet<Vector2Int> _cells = new();
+    private readonly HashSet<Vector2Int> _cells = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Room"/> class.
