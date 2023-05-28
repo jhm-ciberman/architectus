@@ -26,11 +26,11 @@ public static class RandomExtensions
         return randNormal;
     }
 
-    public static double NextNormalizedDouble(this Random random, double standardDeviation = 0.15d)
+    public static float NextGaussianRatio(this Random random, double standardDeviation = 0.15d)
     {
         const double mean = 0.5d;
-        double randNormal = random.NextGaussianDouble(mean, standardDeviation);
-        double normalizedValue = Math.Max(0, Math.Min(1, randNormal));
+        float randNormal = (float)random.NextGaussianDouble(mean, standardDeviation);
+        float normalizedValue = MathF.Max(0, MathF.Min(1, (float)randNormal));
         return normalizedValue;
     }
 }

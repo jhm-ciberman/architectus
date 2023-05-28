@@ -9,20 +9,35 @@ namespace Architectus.Editor
     /// </summary>
     public class HousePreviewControl : Drawable
     {
-        private HouseLot? _house = null;
-        public HouseLot? House
+        private HouseLot? _houseLot = null;
+        public HouseLot? HouseLot
         {
-            get => this._house;
+            get => this._houseLot;
             set
             {
-                if (this._house == value)
+                if (this._houseLot == value)
                     return;
-                this._house = value;
+                this._houseLot = value;
                 this.Invalidate();
             }
         }
 
-        public BindableBinding<HousePreviewControl, HouseLot?> FloorBinding { get; }
+        private int _floorIndex = 0;
+        public int FloorIndex 
+        {
+            get => this._floorIndex;
+            set
+            {
+                if (this._floorIndex == value)
+                    return;
+                this._floorIndex = value;
+                this.Invalidate();
+            }
+        }
+
+        public BindableBinding<HousePreviewControl, HouseLot?> HouseLotBinding { get; }
+
+        public BindableBinding<HousePreviewControl, int> FloorIndexBinding { get; }
 
         private readonly int _cellSize = 20; // The size of each cell in the grid (in pixels).
 
@@ -53,24 +68,42 @@ namespace Architectus.Editor
         /// </summary>
         public HousePreviewControl()
         {
-            this.FloorBinding = new BindableBinding<HousePreviewControl, HouseLot?>(this, 
-                self => self.House, 
-                (self, value) => self.House = value);
+            this.HouseLotBinding = new BindableBinding<HousePreviewControl, HouseLot?>(this, 
+                self => self.HouseLot, 
+                (self, value) => self.HouseLot = value);
+
+            this.FloorIndexBinding = new BindableBinding<HousePreviewControl, int>(this,
+                self => self.FloorIndex,
+                (self, value) => self.FloorIndex = value);
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
 
-            var house = this.House;
-            if (house == null) return;
+            var house = this.HouseLot;
+            if (house == null) 
+            {
+                RectangleF bounds = this.Bounds;
+                e.Graphics.DrawText(this._font, this._fontBrush, this.Bounds, "No house to preview.",
+                    FormattedTextWrapMode.Word, FormattedTextAlignment.Center);
+                return;
+            }
 
-            var floor = house.Floors[0];
+            if (this.FloorIndex < 0 || this.FloorIndex >= house.Floors.Count)
+            {
+                RectangleF bounds = this.Bounds;
+                string str = $"Invalid floor index: {this.FloorIndex}. Must be between 0 and {house.Floors.Count - 1}.";
+                e.Graphics.DrawText(this._font, this._fontBrush, this.Bounds, str,
+                    FormattedTextWrapMode.Word, FormattedTextAlignment.Center);
+                return;
+            }
+
+            var floor = house.Floors[this.FloorIndex];
 
             var g = e.Graphics;
             var cellSize = this._cellSize;
             Vector2Int coords = Vector2Int.Zero;
-
 
             var size = floor.Size;
             for (int x = 0; x < size.X; x++)
@@ -98,6 +131,8 @@ namespace Architectus.Editor
                 g.DrawLine(this._gridPen, new Point(coords.X, coords.Y + y * cellSize), new Point(coords.X + size.X * cellSize, coords.Y + y * cellSize));
             }
 
+            this.DrawWalls(g, floor, coords, cellSize);
+
             foreach (var room in floor.Rooms)
             {
                 var pos = room.Bounds.Center;
@@ -108,6 +143,34 @@ namespace Architectus.Editor
             {
                 var pos = coords + floor.Entrance * cellSize;
                 g.DrawRectangle(this._wallPen, new RectangleF(pos.X + 2, pos.Y + 2, cellSize - 4, cellSize - 4));
+            }
+        }
+
+        private void DrawWalls(Graphics g, Floor floor, Vector2Int coords, int cellSize)
+        {
+            var size = floor.Size;
+            for (int x = 0; x < size.X + 1; x++)
+            {
+                for (int y = 0; y < size.Y + 1; y++)
+                {
+                    var room = floor.GetRoom(new Vector2Int(x, y));
+                    var roomLeft = floor.GetRoom(new Vector2Int(x - 1, y));
+                    var roomTop = floor.GetRoom(new Vector2Int(x, y - 1));
+
+                    bool drawLeft = room != roomLeft;
+                    bool drawTop = room != roomTop;
+                    if (drawLeft)
+                    {
+                        var pos = coords + new Vector2Int(x, y) * cellSize;
+                        g.DrawLine(this._wallPen, new Point(pos.X, pos.Y), new Point(pos.X, pos.Y + cellSize));
+                    }
+
+                    if (drawTop)
+                    {
+                        var pos = coords + new Vector2Int(x, y) * cellSize;
+                        g.DrawLine(this._wallPen, new Point(pos.X, pos.Y), new Point(pos.X + cellSize, pos.Y));
+                    }
+                }
             }
         }
     }

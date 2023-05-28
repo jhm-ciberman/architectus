@@ -8,7 +8,8 @@ public class HousePreviewViewModel : ObservableObject
 
     private int _plotWidth = 10;
     private int _plotHeight = 10;
-    public HouseLot House { get; private set; } = null!;
+    private int _floorIndex = 0;
+    public HouseLot? House { get; private set; } = null;
 
     public HousePreviewViewModel(HouseGenerator generator)
     {
@@ -28,10 +29,22 @@ public class HousePreviewViewModel : ObservableObject
         set { if (this.SetProperty(ref this._plotHeight, value)) this.RegenerateHouse(); }
     }
 
+    public int FloorIndex
+    {
+        get => this._floorIndex;
+        set => this.SetProperty(ref this._floorIndex, value);
+    }
+
     private void RegenerateHouse()
     {
         this._generator.PlotSize = new Vector2Int(this._plotWidth, this._plotHeight);
-        this.House = this._generator.Generate();
+
+        if (this._generator.TryGenerate(out var house)) {
+            this.House = house;
+        } else {
+            this.House = null!;
+        }
+
         this.OnPropertyChanged(nameof(House));
     }
 }

@@ -51,7 +51,7 @@ namespace Architectus.Editor
 				Size = new Size(400, 400),
 				BackgroundColor = Colors.White,	
 			};
-            this._housePreviewControl.FloorBinding.BindDataContext((HousePreviewViewModel vm) => vm.House);
+            this._housePreviewControl.HouseLotBinding.BindDataContext((HousePreviewViewModel vm) => vm.House);
 
 			this.Content = new StackLayout
 			{
@@ -74,9 +74,6 @@ namespace Architectus.Editor
 					new StackLayoutItem(this._housePreviewControl, true),
 				}
 			};
-
-			var houseGenerator = new HouseGenerator();
-			var housePlan = houseGenerator.Generate();
 		}
     }
 }

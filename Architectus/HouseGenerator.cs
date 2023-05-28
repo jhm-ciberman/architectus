@@ -31,12 +31,14 @@ public class HouseGenerator
             {
                 return house;
             }
+
+            numberOfAttempts++;
         }
 
         throw new InvalidOperationException("Failed to generate a house.");
     }
 
-    private bool TryGenerate([NotNullWhen(true)] out HouseLot? house)
+    public bool TryGenerate([NotNullWhen(true)] out HouseLot? house)
     {
         var template = new TwoRoomHouseTemplate();
         var plotSize = this.PlotSize;
@@ -85,7 +87,7 @@ public class TwoRoomHouseTemplate
         // Room2: Bedroom.
 
         // Room1: Living room (left side of the plot)
-        var ratio = (float)random.NextNormalizedDouble();
+        var ratio = random.NextGaussianRatio();
         var livingBounds = houseBounds.SplitRatioLeft(2, 2, ratio, out var bedroomBounds);
 
         floor.AddRoom(livingBounds, RoomType.LivingRoom);

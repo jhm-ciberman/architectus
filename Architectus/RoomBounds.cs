@@ -142,54 +142,44 @@ public struct RoomBounds
         return !(left == right);
     }
 
-    public RoomBounds SplitRatioLeft(int left, int right, float ratio, out RoomBounds rightBounds)
+    /// <summary>
+    /// Split the bounds into two parts, with the left part having a minimum width of <paramref name="minLeft"/> and 
+    /// the right part having a minimum width of <paramref name="minRight"/>. The ratio of the left part to the right
+    /// part is <paramref name="ratio"/> (without the minimum widths). 
+    /// </summary>
+    /// <param name="minLeft">The minimum width of the left part.</param>
+    /// <param name="minRight">The minimum width of the right part.</param>
+    /// <param name="ratio">The ratio of the left part to the right part.</param>
+    /// <param name="rightBounds">The right part.</param>
+    /// <returns>The left part.</returns>
+    public RoomBounds SplitRatioLeft(int minLeft, int minRight, float ratio, out RoomBounds rightBounds)
     {
-        AssertBetween(left, 0, this.Width);
-        AssertBetween(right, 0, this.Width);
-        AssertBetween(ratio, 0f, 1f);
+        AssertBetween(minLeft, 0, this.Width);
+        AssertBetween(minRight, 0, this.Width);
+        AssertBetween(ratio, 0, 1);
 
-        int width = this.Width - left - right;
-        int split = (int)MathF.Round(width * ratio);
-        rightBounds = new RoomBounds(this.X + left + split, this.Y, width - split, this.Height);
-        return new RoomBounds(this.X + left, this.Y, split, this.Height);
+        int leftWidth = (int)(this.Width * ratio);
+        int rightWidth = this.Width - leftWidth;
+
+        if (leftWidth < minLeft)
+        {
+            leftWidth = minLeft;
+            rightWidth = this.Width - leftWidth;
+        }
+        else if (rightWidth < minRight)
+        {
+            rightWidth = minRight;
+            leftWidth = this.Width - rightWidth;
+        }
+
+        rightBounds = new RoomBounds(this.X + leftWidth, this.Y, rightWidth, this.Height);
+        return new RoomBounds(this.X, this.Y, leftWidth, this.Height);
     }
 
-    public RoomBounds SplitRatioRight(int left, int right, float ratio, out RoomBounds leftBounds)
-    {
-        AssertBetween(left, 0, this.Width);
-        AssertBetween(right, 0, this.Width);
-        AssertBetween(ratio, 0f, 1f);
 
-        int width = this.Width - left - right;
-        int split = (int)MathF.Round(width * ratio);
-        leftBounds = new RoomBounds(this.X + left, this.Y, split, this.Height);
-        return new RoomBounds(this.X + left + split, this.Y, width - split, this.Height);
-    }
 
-    public RoomBounds SplitRatioTop(int top, int bottom, float ratio, out RoomBounds bottomBounds)
-    {
-        AssertBetween(top, 0, this.Height);
-        AssertBetween(bottom, 0, this.Height);
-        AssertBetween(ratio, 0f, 1f);
 
-        int height = this.Height - top - bottom;
-        int split = (int)MathF.Round(height * ratio);
-        bottomBounds = new RoomBounds(this.X, this.Y + top + split, this.Width, height - split);
-        return new RoomBounds(this.X, this.Y + top, this.Width, split);
-    }
-
-    public RoomBounds SplitRatioBottom(int top, int bottom, float ratio, out RoomBounds topBounds)
-    {
-        AssertBetween(top, 0, this.Height);
-        AssertBetween(bottom, 0, this.Height);
-        AssertBetween(ratio, 0f, 1f);
-
-        int height = this.Height - top - bottom;
-        int split = (int)MathF.Round(height * ratio);
-        topBounds = new RoomBounds(this.X, this.Y + top, this.Width, split);
-        return new RoomBounds(this.X, this.Y + top + split, this.Width, height - split);
-    }
-
+    /*
     public RoomBounds SplitRatioLeft(int leftRight, float ratio, out RoomBounds rightBounds)
     {
         return this.SplitRatioLeft(leftRight, leftRight, ratio, out rightBounds);
@@ -209,4 +199,5 @@ public struct RoomBounds
     {
         return this.SplitRatioBottom(topBottom, topBottom, ratio, out topBounds);
     }
+    */
 }
