@@ -46,8 +46,6 @@ public class Floor
     /// </summary>
     public int RoomCount => this._rooms.Count;
 
-    public Vector2Int Entrance { get; set; } = new Vector2Int(0, 0);
-
     /// <summary>
     /// Gets a room at the given position or null if there is no room at the given position.
     /// </summary>

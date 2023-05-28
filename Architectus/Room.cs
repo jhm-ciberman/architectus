@@ -18,14 +18,9 @@ public class Room
     /// <summary>
     /// Gets the <see cref="RoomBounds"/> that contains all cells of the room.
     /// </summary>
-    public RoomBounds Bounds { get; set; }
+    public RoomBounds Bounds { get; private set; }
 
-    private readonly List<RoomBounds> _carvings = new();
-
-    /// <summary>
-    /// Gets a list of all carvings in the room.
-    /// </summary>
-    public IReadOnlyList<RoomBounds> Carvings => this._carvings;
+    private HashSet<Vector2Int> _cells = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Room"/> class.
@@ -38,6 +33,14 @@ public class Room
         this.Floor = floor;
         this.Type = type;
         this.Bounds = bounds;
+
+        for (int x = bounds.X; x < bounds.X + bounds.Width; x++)
+        {
+            for (int y = bounds.Y; y < bounds.Y + bounds.Height; y++)
+            {
+                this._cells.Add(new Vector2Int(x, y));
+            }
+        }
     }
 
     /// <summary>
@@ -47,7 +50,21 @@ public class Room
     /// <returns>Whether the room contains the given position.</returns>
     public bool Contains(Vector2Int position)
     {
-        return this.Bounds.Contains(position);
+        return this._cells.Contains(position);
     }
-    
+
+    /// <summary>
+    /// Removes the given rectangle from the room cells.
+    /// </summary>
+    /// <param name="bounds">The rectangle to remove.</param>
+    public void Carve(RoomBounds bounds)
+    {
+        for (int x = bounds.X; x < bounds.X + bounds.Width; x++)
+        {
+            for (int y = bounds.Y; y < bounds.Y + bounds.Height; y++)
+            {
+                this._cells.Remove(new Vector2Int(x, y));
+            }
+        }
+    }
 }

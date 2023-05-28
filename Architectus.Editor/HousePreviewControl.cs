@@ -63,6 +63,14 @@ namespace Architectus.Editor
             };
         }
 
+        private void DrawTextCentered(Graphics g, Font font, Brush brush, RectangleF bounds, string text)
+        {
+            var size = g.MeasureString(font, text);
+            var x = bounds.X + (bounds.Width - size.Width) / 2;
+            var y = bounds.Y + (bounds.Height - size.Height) / 2;
+            g.DrawText(font, brush, x, y, text);
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="HousePreviewControl"/> class.
         /// </summary>
@@ -84,18 +92,14 @@ namespace Architectus.Editor
             var house = this.HouseLot;
             if (house == null) 
             {
-                RectangleF bounds = this.Bounds;
-                e.Graphics.DrawText(this._font, this._fontBrush, this.Bounds, "No house to preview.",
-                    FormattedTextWrapMode.Word, FormattedTextAlignment.Center);
+                this.DrawTextCentered(e.Graphics, this._font, this._fontBrush, this.Bounds, "No house to preview.");
                 return;
             }
 
             if (this.FloorIndex < 0 || this.FloorIndex >= house.Floors.Count)
             {
-                RectangleF bounds = this.Bounds;
                 string str = $"Invalid floor index: {this.FloorIndex}. Must be between 0 and {house.Floors.Count - 1}.";
-                e.Graphics.DrawText(this._font, this._fontBrush, this.Bounds, str,
-                    FormattedTextWrapMode.Word, FormattedTextAlignment.Center);
+                this.DrawTextCentered(e.Graphics, this._font, this._fontBrush, this.Bounds, str);
                 return;
             }
 
@@ -135,14 +139,14 @@ namespace Architectus.Editor
 
             foreach (var room in floor.Rooms)
             {
-                var pos = room.Bounds.Center;
-                var str = room.Type.ToString()[0];
-                g.DrawText(this._font, this._fontBrush, coords.X + pos.X * cellSize, coords.Y + pos.Y * cellSize, str.ToString());
-            }
-
-            {
-                var pos = coords + floor.Entrance * cellSize;
-                g.DrawRectangle(this._wallPen, new RectangleF(pos.X + 2, pos.Y + 2, cellSize - 4, cellSize - 4));
+                var str = room.Type.ToString();
+                var bounds = new RectangleF(
+                    coords.X + room.Bounds.X * cellSize, 
+                    coords.Y + room.Bounds.Y * cellSize, 
+                    room.Bounds.Width * cellSize,
+                    room.Bounds.Height * cellSize);
+                    
+                this.DrawTextCentered(g, this._font, this._fontBrush, bounds, str);
             }
         }
 

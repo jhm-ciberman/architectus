@@ -39,12 +39,14 @@ namespace Architectus.Editor
 				AboutItem = aboutCommand
 			};
 
-
 			var widthStepper = new NumericStepper { MinValue = 1, MaxValue = 100, Value = 10 };
             widthStepper.ValueBinding.BindDataContext((HousePreviewViewModel vm) => vm.PlotWidth);
 
 			var heightStepper = new NumericStepper { MinValue = 1, MaxValue = 100, Value = 10 };
             heightStepper.ValueBinding.BindDataContext((HousePreviewViewModel vm) => vm.PlotHeight);
+
+			var floorIndexStepper = new NumericStepper { MinValue = 0, MaxValue = 10, Value = 0 };
+			floorIndexStepper.ValueBinding.BindDataContext((HousePreviewViewModel vm) => vm.FloorIndex);
 
             this._housePreviewControl = new HousePreviewControl 
 			{ 
@@ -52,6 +54,8 @@ namespace Architectus.Editor
 				BackgroundColor = Colors.White,	
 			};
             this._housePreviewControl.HouseLotBinding.BindDataContext((HousePreviewViewModel vm) => vm.House);
+			this._housePreviewControl.FloorIndexBinding.BindDataContext((HousePreviewViewModel vm) => vm.FloorIndex);
+
 
 			this.Content = new StackLayout
 			{
@@ -65,10 +69,12 @@ namespace Architectus.Editor
 						Orientation = Orientation.Vertical,
 						Items =
 						{
-							new Label { Text = "Width" },
+							"Width",
 							widthStepper,
-							new Label { Text = "Height" },
+							"Height",
 							heightStepper,
+							"Floor Index",
+							floorIndexStepper,
 						},
 					},
 					new StackLayoutItem(this._housePreviewControl, true),

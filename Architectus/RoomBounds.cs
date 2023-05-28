@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using CommunityToolkit.Diagnostics;
 
 namespace Architectus;
 
@@ -31,26 +32,10 @@ public struct RoomBounds
     public Vector2Int Size => new Vector2Int(this.Width, this.Height);
     public Vector2Int Center => new Vector2Int(this.X + this.Width / 2, this.Y + this.Height / 2);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void AssertBetween(int value, int min, int max, [CallerArgumentExpression("value")] string name = "")
-    {
-        if (value < min || value > max)
-        {
-            throw new ArgumentOutOfRangeException(name);
-        }
-    }
-
-    private static void AssertBetween(float value, float min, float max, [CallerArgumentExpression("value")] string name = "")
-    {
-        if (value < min || value > max)
-        {
-            throw new ArgumentOutOfRangeException(name);
-        }
-    }
 
     public RoomBounds SplitLeft(int width, out RoomBounds right)
     {
-        AssertBetween(width, 0, this.Width);
+        Guard.IsBetween(width, 0, this.Width);
 
         right = new RoomBounds(this.X + width, this.Y, this.Width - width, this.Height);
         return new RoomBounds(this.X, this.Y, width, this.Height);
@@ -58,7 +43,7 @@ public struct RoomBounds
 
     public RoomBounds SplitRight(int width, out RoomBounds left)
     {
-        AssertBetween(width, 0, this.Width);
+        Guard.IsBetween(width, 0, this.Width);
 
         left = new RoomBounds(this.X, this.Y, width, this.Height);
         return new RoomBounds(this.X + width, this.Y, this.Width - width, this.Height);
@@ -66,7 +51,7 @@ public struct RoomBounds
 
     public RoomBounds SplitTop(int height, out RoomBounds bottom)
     {
-        AssertBetween(height, 0, this.Height);
+        Guard.IsBetween(height, 0, this.Height);
 
         bottom = new RoomBounds(this.X, this.Y + height, this.Width, this.Height - height);
         return new RoomBounds(this.X, this.Y, this.Width, height);
@@ -74,7 +59,7 @@ public struct RoomBounds
 
     public RoomBounds SplitBottom(int height, out RoomBounds top)
     {
-        AssertBetween(height, 0, this.Height);
+        Guard.IsBetween(height, 0, this.Height);
 
         top = new RoomBounds(this.X, this.Y, this.Width, height);
         return new RoomBounds(this.X, this.Y + height, this.Width, this.Height - height);
@@ -82,10 +67,12 @@ public struct RoomBounds
 
     public RoomBounds Deflate(int left, int top, int right, int bottom)
     {
-        AssertBetween(left, 0, this.Width);
-        AssertBetween(top, 0, this.Height);
-        AssertBetween(right, 0, this.Width);
-        AssertBetween(bottom, 0, this.Height);
+        Guard.IsBetween(left, 0, this.Width);
+        Guard.IsBetween(right, 0, this.Width);
+        Guard.IsBetween(top, 0, this.Height);
+        Guard.IsBetween(bottom, 0, this.Height);
+        Guard.IsLessThan(left + right, this.Width);
+        Guard.IsLessThan(top + bottom, this.Height);
 
         return new RoomBounds(this.X + left, this.Y + top, this.Width - left - right, this.Height - top - bottom);
     }
@@ -154,9 +141,10 @@ public struct RoomBounds
     /// <returns>The left part.</returns>
     public RoomBounds SplitRatioLeft(int minLeft, int minRight, float ratio, out RoomBounds rightBounds)
     {
-        AssertBetween(minLeft, 0, this.Width);
-        AssertBetween(minRight, 0, this.Width);
-        AssertBetween(ratio, 0, 1);
+        Guard.IsBetween(minLeft, 0, this.Width);
+        Guard.IsBetween(minRight, 0, this.Width);
+        Guard.IsBetween(ratio, 0, 1);
+        Guard.IsLessThanOrEqualTo(minLeft + minRight, this.Width);
 
         int leftWidth = (int)(this.Width * ratio);
         int rightWidth = this.Width - leftWidth;
