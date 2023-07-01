@@ -40,16 +40,26 @@ public class HouseGenerator
 
     public bool TryGenerate([NotNullWhen(true)] out HouseLot? house)
     {
-        var template = new TwoRoomHouseTemplate();
-        var plotSize = this.PlotSize;
-
-        if (template.CanExecute(plotSize))
+        //var template = new TwoRoomHouseTemplate();
+        var templates = new HouseTemplate[]
         {
-            house = template.Execute(plotSize, this._random);
-            return true;
+            new TwoRoomHouseTemplate(),
+            new SmallFamiliarHouseTemplate(),
+        };
+
+        List<HouseTemplate> candidates = templates
+            .Where(x => x.CanExecute(this.PlotSize))
+            .ToList();
+
+        if (candidates.Count == 0)
+        {
+            house = null;
+            return false;
         }
 
-        house = null;
-        return false;
+        var template = candidates[this._random.Next(candidates.Count)];
+
+        house = template.Execute(this.PlotSize, this._random);
+        return true;
     }
 }

@@ -6,4 +6,5 @@ public enum RoomType : byte
     Bedroom,
     Kitchen,
     LivingRoom,
+    Corridor,
 }

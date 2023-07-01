@@ -31,6 +31,10 @@ public struct RoomBounds
     public Vector2Int Size => new Vector2Int(this.Width, this.Height);
     public Vector2Int Center => new Vector2Int(this.X + this.Width / 2, this.Y + this.Height / 2);
 
+    public override string ToString()
+    {
+        return $"({this.X}, {this.Y}, {this.Width}, {this.Height})";
+    }
 
     public RoomBounds SplitLeft(int width, out RoomBounds right)
     {

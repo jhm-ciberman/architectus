@@ -61,4 +61,11 @@ public static class RandomExtensions
 
         return value;
     }
+
+    public static Vector2Int NextVector2Int(this Random random, Vector2Int min, Vector2Int max)
+    {
+        int x = random.Next(min.X, max.X + 1);
+        int y = random.Next(min.Y, max.Y + 1);
+        return new Vector2Int(x, y);
+    }
 }

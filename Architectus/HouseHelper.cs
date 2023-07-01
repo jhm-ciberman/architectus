@@ -6,8 +6,7 @@ namespace Architectus;
 public static class HouseHelper
 {
     /// <summary>
-    /// Deflates the bounds to a random size between minSize and maxSize. The room will be positioned
-    /// according to the position strategy. The room, by convention, will be positioned
+    /// Deflates the bounds to a random size between minSize and maxSize. The room, by convention, will be positioned
     /// prioritizing the right of the bounds because the entrance is assumed to be on the left side of the plot.
     /// </summary>
     /// <param name="random">The random number generator to use.</param>
