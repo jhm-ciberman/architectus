@@ -44,22 +44,29 @@ public class HouseGenerator
         var templates = new HouseTemplate[]
         {
             new TwoRoomHouseTemplate(),
-            new SmallFamiliarHouseTemplate(),
+            new SmallFamiliarHouseTemplate() { NumberOfBedrooms = 2 },
+            new SmallFamiliarHouseTemplate() { NumberOfBedrooms = 3 },
+            new SmallFamiliarHouseTemplate() { NumberOfBedrooms = 4 },
         };
 
-        List<HouseTemplate> candidates = templates
-            .Where(x => x.CanExecute(this.PlotSize))
-            .ToList();
+        List<HouseLot> generated = new();
+        foreach (var template in templates)
+        {
+            if (template.TryBuild(this.PlotSize, this._random, out var houseLot))
+            {
+                generated.Add(houseLot);
+            }
+        }
 
-        if (candidates.Count == 0)
+        Console.WriteLine($"Generated {generated.Count} houses.");
+
+        if (generated.Count == 0)
         {
             house = null;
             return false;
         }
 
-        var template = candidates[this._random.Next(candidates.Count)];
-
-        house = template.Execute(this.PlotSize, this._random);
+        house = generated[this._random.Next(generated.Count)];
         return true;
     }
 }
