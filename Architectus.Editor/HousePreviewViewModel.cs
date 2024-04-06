@@ -1,4 +1,5 @@
 using Architectus.Support;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Architectus.Editor;
 
