@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <OutputPath>..\bin\</OutputPath>
@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <!-- Add global implicit using to the project -->
-    <Using Include="System.Numerics" />  
+    <Using Include="System.Numerics" />
 
     <!-- Import packages -->
     <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.2.0" />

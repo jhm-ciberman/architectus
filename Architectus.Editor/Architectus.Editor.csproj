@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <nullable>enable</nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Architectus\Architectus.csproj" />
-    <PackageReference Include="Eto.Forms" Version="2.7.0" />
+    <PackageReference Include="Eto.Forms" Version="2.8.3" />
   </ItemGroup>
 
 </Project>
