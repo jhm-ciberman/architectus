@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Architectus.Support;
 using LifeSim.Support.Numerics;
 
 namespace Architectus;
@@ -11,8 +10,6 @@ public class HouseGenerator
     private readonly Random _random;
 
     public Vector2Int PlotSize { get; set; } = new Vector2Int(10, 10);
-
-    public CardinalDirection PlotDirection { get; } // The direction the plot entrance is facing.
 
     public HouseGenerator(Random? random = null)
     {
