@@ -16,28 +16,6 @@ public class HouseGenerator
         this._random = random ?? Random.Shared;
     }
 
-    public HouseLot Generate()
-    {
-        int numberOfAttempts = 0;
-
-        if (this.PlotSize.X < 3 || this.PlotSize.Y < 3)
-        {
-            throw new ArgumentException("Plot size must be at least 3x3.");
-        }
-
-        while (numberOfAttempts < 3)
-        {
-            if (this.TryGenerate(out var house))
-            {
-                return house;
-            }
-
-            numberOfAttempts++;
-        }
-
-        throw new InvalidOperationException("Failed to generate a house.");
-    }
-
     public bool TryGenerate([NotNullWhen(true)] out HouseLot? house)
     {
         //var template = new TwoRoomHouseTemplate();
