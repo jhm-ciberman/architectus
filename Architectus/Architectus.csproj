@@ -1,19 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <OutputPath>..\bin\</OutputPath>
-    <ObjectPath>..\obj\</ObjectPath>
-  </PropertyGroup>
-
   <ItemGroup>
-    <!-- Add global implicit using to the project -->
-    <Using Include="System.Numerics" />
+    <ProjectReference Include="..\LifeSim.Support\LifeSim.Support.csproj" />
 
     <!-- Import packages -->
     <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.2.0" />
   </ItemGroup>
-
 </Project>

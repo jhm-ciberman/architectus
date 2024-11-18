@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using Architectus.Support;
+using LifeSim.Support.Numerics;
 
 namespace Architectus;
 
@@ -18,9 +20,9 @@ public class Room
     public RoomType Type { get; } = RoomType.Garden;
 
     /// <summary>
-    /// Gets the <see cref="RoomBounds"/> that contains all cells of the room.
+    /// Gets the <see cref="RectInt"/> that contains all cells of the room.
     /// </summary>
-    public RoomBounds Bounds { get; private set; }
+    public RectInt Bounds { get; private set; }
 
     private readonly HashSet<Vector2Int> _cells = new();
 
@@ -29,8 +31,8 @@ public class Room
     /// </summary>
     /// <param name="floor">The floor that owns this room.</param>
     /// <param name="type">The room's type.</param>
-    /// <param name="bounds">The <see cref="RoomBounds"/> that contains all cells of the room.</param>
-    public Room(Floor floor, RoomType type, RoomBounds bounds)
+    /// <param name="bounds">The <see cref="RectInt"/> that contains all cells of the room.</param>
+    public Room(Floor floor, RoomType type, RectInt bounds)
     {
         this.Floor = floor;
         this.Type = type;
@@ -59,7 +61,7 @@ public class Room
     /// Removes the given rectangle from the room cells.
     /// </summary>
     /// <param name="bounds">The rectangle to remove.</param>
-    public void Carve(RoomBounds bounds)
+    public void Carve(RectInt bounds)
     {
         for (int x = bounds.X; x < bounds.X + bounds.Width; x++)
         {

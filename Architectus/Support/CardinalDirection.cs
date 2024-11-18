@@ -1,3 +1,6 @@
+using System;
+using LifeSim.Support.Numerics;
+
 namespace Architectus.Support;
 
 /// <summary>

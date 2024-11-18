@@ -1,5 +1,7 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 using Architectus.Support;
+using LifeSim.Support.Numerics;
 
 namespace Architectus;
 
@@ -114,4 +116,6 @@ public class SmallFamiliarHouseTemplate : HouseTemplate
 
         return true;
     }
+
+
 }

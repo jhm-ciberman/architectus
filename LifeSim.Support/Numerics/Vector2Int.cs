@@ -1,7 +1,9 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace Architectus.Support;
+namespace LifeSim.Support.Numerics;
 
 /// <summary>
 /// Represents a 2D vector with integer components.
@@ -18,8 +20,25 @@ public struct Vector2Int : IEquatable<Vector2Int>
     /// </summary>
     public int Y;
 
+    /// <summary>
+    /// Gets a vector with both components set to 1.
+    /// </summary>
     public static Vector2Int One => new Vector2Int(1, 1);
+
+    /// <summary>
+    /// Gets a vector with both components set to 0.
+    /// </summary>
     public static Vector2Int Zero => new Vector2Int(0, 0);
+
+    /// <summary>
+    /// Gets a vector with the X component set to 1 and the Y component set to 0.
+    /// </summary>
+    public static Vector2Int UnitX => new Vector2Int(1, 0);
+
+    /// <summary>
+    /// Gets a vector with the X component set to 0 and the Y component set to 1.
+    /// </summary>
+    public static Vector2Int UnitY => new Vector2Int(0, 1);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Vector2Int"/> struct.
@@ -66,30 +85,18 @@ public struct Vector2Int : IEquatable<Vector2Int>
     }
 
     /// <summary>
-    /// Clamps the vector to the given minimum and maximum vectors.
+    /// Linearly interpolates between two vectors.
     /// </summary>
-    /// <param name="value">The vector to clamp.</param>
-    /// <param name="min">The minimum vector.</param>
-    /// <param name="max">The maximum vector.</param>
-    /// <returns>The clamped vector.</returns>
-    public static Vector2Int Clamp(Vector2Int value, Vector2Int min, Vector2Int max)
+    /// <param name="value1">The first vector.</param>
+    /// <param name="value2">The second vector.</param>
+    /// <param name="t">The interpolation factor.</param>
+    /// <returns>The interpolated vector.</returns>
+    public static Vector2Int Lerp(Vector2Int value1, Vector2Int value2, float t)
     {
         return new Vector2Int(
-            Math.Min(max.X, Math.Max(min.X, value.X)),
-            Math.Min(max.Y, Math.Max(min.Y, value.Y)));
+            (int)Math.Round(float.Lerp(value1.X, value2.X, t)),
+            (int)Math.Round(float.Lerp(value1.Y, value2.Y, t)));
     }
-
-    /// <summary>
-    /// Computes the manhattan distance between two vectors.
-    /// </summary>
-    /// <param name="a">The first vector.</param>
-    /// <param name="b">The second vector.</param>
-    /// <returns>The manhattan distance between the two vectors.</returns>
-    public static float ManhattanDistance(Vector2Int a, Vector2Int b)
-    {
-        return Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y);
-    }
-
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector2Int operator +(Vector2Int a, Vector2Int b)
@@ -122,6 +129,12 @@ public struct Vector2Int : IEquatable<Vector2Int>
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector2Int operator *(int a, Vector2Int b)
+    {
+        return new Vector2Int(a * b.X, a * b.Y);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector2Int operator /(Vector2Int a, int b)
     {
         return new Vector2Int(a.X / b, a.Y / b);
@@ -137,6 +150,12 @@ public struct Vector2Int : IEquatable<Vector2Int>
     public static Vector2Int operator /(Vector2Int a, uint b)
     {
         return new Vector2Int(a.X / (int)b, a.Y / (int)b);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector2Int operator -(Vector2Int a)
+    {
+        return new Vector2Int(-a.X, -a.Y);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using Architectus.Support;
+using LifeSim.Support.Numerics;
 
 namespace Architectus;
 
@@ -24,7 +27,7 @@ public class Floor
     public Vector2Int Size => this.House.Size;
 
 
-    public RoomBounds Bounds => new RoomBounds(Vector2Int.Zero, this.Size);
+    public RectInt Bounds => new RectInt(Vector2Int.Zero, this.Size);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Floor"/> class.
@@ -65,7 +68,7 @@ public class Floor
     /// <summary>
     /// Adds a room to the floor.
     /// </summary>
-    public Room AddRoom(RoomBounds bounds, RoomType type)
+    public Room AddRoom(RectInt bounds, RoomType type)
     {
         var room = new Room(this, type, bounds);
         this.AssignRectangle(room, bounds);
@@ -73,7 +76,7 @@ public class Floor
         return room;
     }
 
-    public bool RectIsEmpty(RoomBounds bounds)
+    public bool RectIsEmpty(RectInt bounds)
     {
         for (var x = bounds.Position.X; x < bounds.Position.X + bounds.Size.X; x++)
         {
@@ -88,7 +91,7 @@ public class Floor
         return true;
     }
 
-    private void AssignRectangle(Room room, RoomBounds area)
+    private void AssignRectangle(Room room, RectInt area)
     {
         var position = area.Position;
         var size = area.Size;

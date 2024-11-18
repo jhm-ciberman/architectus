@@ -1,5 +1,6 @@
 using Architectus.Support;
 using CommunityToolkit.Mvvm.ComponentModel;
+using LifeSim.Support.Numerics;
 
 namespace Architectus.Editor;
 

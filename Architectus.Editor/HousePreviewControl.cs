@@ -1,6 +1,7 @@
 ﻿using Architectus.Support;
 using Eto.Drawing;
 using Eto.Forms;
+using LifeSim.Support.Numerics;
 
 namespace Architectus.Editor;
 

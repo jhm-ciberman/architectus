@@ -1,5 +1,7 @@
+using System;
 using Architectus.Support;
 using CommunityToolkit.Diagnostics;
+using LifeSim.Support.Numerics;
 
 namespace Architectus;
 
@@ -14,7 +16,7 @@ public static class HouseHelper
     /// <param name="minSize">The minimum size of the bounds.</param>
     /// <param name="maxSize">The maximum size of the bounds.</param>
     /// <returns>The deflated bounds.</returns>
-    public static RoomBounds DeflatePlotToIndoorSize(Random random, RoomBounds bounds, Vector2Int minSize, Vector2Int maxSize)
+    public static RectInt DeflatePlotToIndoorSize(Random random, RectInt bounds, Vector2Int minSize, Vector2Int maxSize)
     {
         Guard.IsBetweenOrEqualTo(minSize.X, 1, maxSize.X, $"{nameof(minSize)}.{nameof(minSize.X)}");
         Guard.IsBetweenOrEqualTo(minSize.Y, 1, maxSize.Y, $"{nameof(minSize)}.{nameof(minSize.Y)}");
@@ -45,6 +47,6 @@ public static class HouseHelper
         var y = (int)Math.Round(freeSpace.Y * percentY);
         var position = new Vector2Int(x, y) + bounds.Position;
 
-        return new RoomBounds(position, size);
+        return new RectInt(position, size);
     }
 }

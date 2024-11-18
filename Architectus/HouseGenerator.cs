@@ -1,5 +1,8 @@
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Architectus.Support;
+using LifeSim.Support.Numerics;
 
 namespace Architectus;
 
