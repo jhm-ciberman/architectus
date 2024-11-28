@@ -6,16 +6,13 @@ namespace Architectus.Editor;
 
 public class HousePreviewViewModel : ObservableObject
 {
-    private readonly HouseGenerator _generator;
-
     private int _plotWidth = 10;
     private int _plotHeight = 10;
     private int _floorIndex = 0;
     public HouseLot? House { get; private set; } = null;
 
-    public HousePreviewViewModel(HouseGenerator generator)
+    public HousePreviewViewModel()
     {
-        this._generator = generator;
         this.RegenerateHouse();
     }
 
@@ -39,9 +36,10 @@ public class HousePreviewViewModel : ObservableObject
 
     private void RegenerateHouse()
     {
-        this._generator.PlotSize = new Vector2Int(this._plotWidth, this._plotHeight);
+        var generator = new HouseGenerator();
+        generator.PlotSize = new Vector2Int(this._plotWidth, this._plotHeight);
 
-        if (this._generator.TryGenerate(out var house))
+        if (generator.TryGenerate(out var house))
         {
             this.House = house;
         }

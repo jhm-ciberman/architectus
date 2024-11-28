@@ -11,7 +11,7 @@ public partial class MainForm : Form
     {
         this.Title = "Architectus Editor";
         this.MinimumSize = new Size(800, 600);
-        this.DataContext = new HousePreviewViewModel(new HouseGenerator());
+        this.DataContext = new HousePreviewViewModel();
 
         var quitCommand = new Command { MenuText = "Quit", Shortcut = Application.Instance.CommonModifier | Keys.Q };
         quitCommand.Executed += (sender, e) => Application.Instance.Quit();
