@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Architectus;
+namespace Architectus.Layouts;
 
 public abstract class ContainerLayout : LayoutElement
 {
