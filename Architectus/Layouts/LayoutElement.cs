@@ -4,21 +4,27 @@ using LifeSim.Support.Numerics;
 
 namespace Architectus.Layouts;
 
-public enum LayoutRotation
-{
-    Rotation0 = 0,
-    Rotation90 = 90,
-    Rotation180 = 180,
-    Rotation270 = 270
-}
-
 public abstract class LayoutElement
 {
-    public LayoutRotation Rotation { get; set; } = LayoutRotation.Rotation0;
+    /// <summary>
+    /// Gets or sets whether the element and its children should be flipped horizontally.
+    /// </summary>
     public bool FlipX { get; set; }
+
+    /// <summary>
+    /// Gets or sets whether the element and its children should be flipped vertically.
+    /// </summary>
     public bool FlipY { get; set; }
 
+    /// <summary>
+    /// Gets the desired size of the element. This is the size that the element would like to be, after
+    /// the Measure pass.
+    /// </summary>
     public Vector2Int DesiredSize { get; protected set; }
+
+    /// <summary>
+    /// Gets the actual bounds that the element occupies in the layout after the Arrange pass.
+    /// </summary>
     public RectInt Bounds { get; private set; }
 
     public Matrix3x2 WorldMatrix { get; private set; } = Matrix3x2.Identity;
@@ -31,21 +37,22 @@ public abstract class LayoutElement
 
     public Vector2Int Measure(Vector2Int availableSize)
     {
-        availableSize = this.TransformSizeInverse(availableSize);
-
         this.DesiredSize = this.MeasureOverride(availableSize);
-        return this.TransformSize(this.DesiredSize);
+        return this.DesiredSize;
     }
 
     public RectInt Arrange(RectInt finalRect)
     {
         var bounds = this.ArrangeOverride(finalRect);
-        this.Bounds = this.TransformRect(bounds);
+        this.Bounds = TransformRect(bounds, this.WorldMatrix);
 
         return this.Bounds;
     }
 
-    public virtual void Imprint(HouseLot house) { }
+    public virtual void Imprint(HouseLot house)
+    {
+        // Do nothing by default
+    }
 
     protected virtual Vector2Int MeasureOverride(Vector2Int availableSize)
     {
@@ -62,13 +69,9 @@ public abstract class LayoutElement
         // Determine the center point of the element based on its bounds
         Vector2 center = this.Bounds.Position + new Vector2(this.DesiredSize.X, this.DesiredSize.Y) / 2;
 
-        // Create rotation and flip matrices
-        var rotationAngle = (int)this.Rotation * MathF.PI / 180f;
-        var rotation = Matrix3x2.CreateRotation(rotationAngle, center);
         var flip = Matrix3x2.CreateScale(this.FlipX ? -1 : 1, this.FlipY ? -1 : 1, center);
 
-        // Combine transformations: toCenter -> (flip + rotate) -> fromCenter
-        return flip * rotation;
+        return flip;
     }
 
     private static RectInt TransformRect(RectInt rect, Matrix3x2 matrix)
@@ -88,31 +91,6 @@ public abstract class LayoutElement
         var delta = max - min;
 
         return new RectInt((int)min.X, (int)min.Y, (int)delta.X, (int)delta.Y);
-    }
-
-    private RectInt TransformRect(RectInt rect)
-    {
-        return TransformRect(rect, this.WorldMatrix);
-    }
-
-    private RectInt TransformRectInverse(RectInt rect)
-    {
-        if (!Matrix3x2.Invert(this.WorldMatrix, out var inverse))
-        {
-            throw new InvalidOperationException("Matrix is not invertible.");
-        }
-
-        return TransformRect(rect, inverse);
-    }
-
-    private Vector2Int TransformSize(Vector2Int size)
-    {
-        return (((int)this.Rotation) % 180) == 0 ? size : new Vector2Int(size.Y, size.X);
-    }
-
-    private Vector2Int TransformSizeInverse(Vector2Int size)
-    {
-        return (((int)this.Rotation) % 180) == 0 ? size : new Vector2Int(size.Y, size.X);
     }
 }
 
