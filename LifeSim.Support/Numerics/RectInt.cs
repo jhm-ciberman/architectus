@@ -162,6 +162,16 @@ public struct RectInt : IEquatable<RectInt>
             && this.Height == other.Height;
     }
 
+    public RectInt Deflate(ThicknessInt thickness)
+    {
+        return new RectInt(
+            this.X + thickness.Left,
+            this.Y + thickness.Top,
+            this.Width - thickness.Horizontal,
+            this.Height - thickness.Vertical
+        );
+    }
+
     /// <summary>
     /// Checks if the given object is equal to this rectangle.
     /// </summary>

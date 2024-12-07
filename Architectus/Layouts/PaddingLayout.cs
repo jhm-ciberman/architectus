@@ -1,30 +1,24 @@
+using System;
 using LifeSim.Support.Numerics;
 
 namespace Architectus.Layouts;
 
-public class PaddingLayout : DecoratorLayout
+public class PaddingLayout : ContentLayout
 {
-    public int Padding { get; set; }
+    public ThicknessInt Padding { get; set; }
 
-    public override void Measure(Vector2Int availableSize)
+    protected override Vector2Int MeasureOverride(Vector2Int availableSize)
     {
-        var padding = Vector2Int.One * this.Padding * 2;
-        this.Child.Measure(availableSize - padding);
+        Console.WriteLine($"Padding: . {availableSize} - {this.Padding} = ({availableSize - this.Padding.Total})");
+        this.Content.Measure(availableSize - this.Padding.Total);
 
-        this.DesiredSize = this.Child.DesiredSize + padding;
+        return availableSize;
     }
 
-    public override void Arrange(RectInt finalRect)
+    protected override RectInt ArrangeOverride(RectInt finalRect)
     {
-        this.Child.Arrange(new RectInt(
-            finalRect.X + this.Padding,
-            finalRect.Y + this.Padding,
-            finalRect.Width - 2 * this.Padding,
-            finalRect.Height - 2 * this.Padding));
-    }
+        finalRect = finalRect.Deflate(this.Padding);
 
-    public override void Imprint(HouseLot house)
-    {
-        this.Child.Imprint(house);
+        return this.Content.Arrange(finalRect);
     }
 }

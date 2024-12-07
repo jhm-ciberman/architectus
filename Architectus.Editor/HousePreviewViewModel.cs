@@ -6,8 +6,8 @@ namespace Architectus.Editor;
 
 public class HousePreviewViewModel : ObservableObject
 {
-    private int _plotWidth = 10;
-    private int _plotHeight = 10;
+    private int _plotWidth = 20;
+    private int _plotHeight = 15;
     private int _floorIndex = 0;
     public HouseLot? House { get; private set; } = null;
 

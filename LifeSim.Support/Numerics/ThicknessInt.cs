@@ -75,16 +75,6 @@ public struct ThicknessInt : IEquatable<ThicknessInt>
         return new ThicknessInt(a.Left - b.Left, a.Top - b.Top, a.Right - b.Right, a.Bottom - b.Bottom);
     }
 
-    public static Vector2Int operator +(ThicknessInt a, Vector2Int b)
-    {
-        return new Vector2Int(a.Left + b.X, a.Top + b.Y);
-    }
-
-    public static Vector2Int operator -(ThicknessInt a, Vector2Int b)
-    {
-        return new Vector2Int(a.Left - b.X, a.Top - b.Y);
-    }
-
     public override string ToString()
     {
         return $"{this.Left}, {this.Top}, {this.Right}, {this.Bottom}";

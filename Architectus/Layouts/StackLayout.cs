@@ -1,111 +1,80 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using LifeSim.Support.Numerics;
 
 namespace Architectus.Layouts;
 
-public enum LayoutOrientation { Horizontal, Vertical }
+public enum Orientation
+{
+    Horizontal,
+    Vertical,
+}
 
 public class StackLayout : ContainerLayout
 {
-    public LayoutOrientation Orientation { get; set; } = LayoutOrientation.Horizontal;
+    public bool LastChildFill { get; set; } = true;
 
-    public bool LastChildFill { get; set; } = false;
+    public Orientation Orientation { get; set; } = Orientation.Vertical;
 
-    public override void Measure(Vector2Int availableSize)
+    public bool Reverse { get; set; } = false;
+
+    private IReadOnlyList<LayoutElement>? _actualChildren;
+
+    protected override Vector2Int MeasureOverride(Vector2Int availableSize)
     {
-        if (this.Orientation == LayoutOrientation.Horizontal)
-        {
-            this.MeasureHorizontal(availableSize);
-        }
-        else
-        {
-            this.MeasureVertical(availableSize);
-        }
-    }
+        var size = Vector2Int.Zero;
 
-    public override void Arrange(RectInt finalRect)
-    {
-        if (this.Orientation == LayoutOrientation.Horizontal)
-        {
-            this.ArrangeHorizontal(finalRect);
-        }
-        else
-        {
-            this.ArrangeVertical(finalRect);
-        }
-    }
-
-    private void MeasureHorizontal(Vector2Int availableSize)
-    {
-        int width = 0;
-        int height = 0;
-
-        foreach (var child in this.Children)
-        {
-            child.Measure(availableSize);
-            var desiredSize = child.DesiredSize;
-            width += desiredSize.X;
-            height = Math.Max(height, desiredSize.Y);
-            availableSize.X -= desiredSize.X;
-        }
-
-        this.DesiredSize = new Vector2Int(width, height);
-    }
-
-    private void MeasureVertical(Vector2Int availableSize)
-    {
-        int width = 0;
-        int height = 0;
-
-        foreach (var child in this.Children)
-        {
-            child.Measure(availableSize);
-            var desiredSize = child.DesiredSize;
-            width = Math.Max(width, desiredSize.X);
-            height += desiredSize.Y;
-            availableSize.Y -= desiredSize.Y;
-        }
-
-        this.DesiredSize = new Vector2Int(width, height);
-    }
-
-    private void ArrangeVertical(RectInt finalRect)
-    {
-        int x = finalRect.X;
-        int y = finalRect.Y;
-
-        for (int i = 0; i < this.Children.Count; i++)
+        for (var i = 0; i < this.Children.Count; i++)
         {
             var child = this.Children[i];
+            var childSize = child.Measure(availableSize);
 
-            var height = child.DesiredSize.Y;
-            if (this.LastChildFill && i == this.Children.Count - 1)
+            if (this.Orientation == Orientation.Horizontal)
             {
-                height = finalRect.Height - y + 1;
+                size.X += childSize.X;
+                size.Y = Math.Max(size.Y, childSize.Y);
             }
-
-            child.Arrange(new RectInt(x, y, finalRect.Width, height));
-            y += child.DesiredSize.Y;
+            else
+            {
+                size.X = Math.Max(size.X, childSize.X);
+                size.Y += childSize.Y;
+            }
         }
+
+        return size;
     }
 
-    private void ArrangeHorizontal(RectInt finalRect)
+
+    protected override RectInt ArrangeOverride(RectInt finalRect)
     {
-        int x = finalRect.X;
-        int y = finalRect.Y;
+        var offset = finalRect.Position;
 
-        for (int i = 0; i < this.Children.Count; i++)
+        this._actualChildren ??= this.Reverse
+            ? this.Children.ToArray().Reverse().ToList()
+            : this.Children;
+
+        for (var i = 0; i < this._actualChildren.Count; i++)
         {
-            var child = this.Children[i];
+            var child = this._actualChildren[i];
+            var fill = this.LastChildFill && i == this._actualChildren.Count - 1;
 
-            var width = child.DesiredSize.X;
-            if (this.LastChildFill && i == this.Children.Count - 1)
+            if (this.Orientation == Orientation.Horizontal)
             {
-                width = finalRect.Width - x + 1;
-            }
+                var childWidth = fill ? finalRect.Right - offset.X : child.DesiredSize.X;
 
-            child.Arrange(new RectInt(x, y, width, finalRect.Height));
-            x += child.DesiredSize.X;
+                child.Arrange(new RectInt(offset, new Vector2Int(childWidth, finalRect.Height)));
+                offset.X += child.Bounds.Width;
+            }
+            else
+            {
+                var childHeight = fill ? finalRect.Bottom - offset.Y : child.DesiredSize.Y;
+
+                child.Arrange(new RectInt(offset, new Vector2Int(finalRect.Width, childHeight)));
+                offset.Y += child.Bounds.Height;
+            }
         }
+
+        return finalRect;
     }
 }
