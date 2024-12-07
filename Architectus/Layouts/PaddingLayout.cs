@@ -9,7 +9,6 @@ public class PaddingLayout : ContentLayout
 
     protected override Vector2Int MeasureOverride(Vector2Int availableSize)
     {
-        Console.WriteLine($"Padding: . {availableSize} - {this.Padding} = ({availableSize - this.Padding.Total})");
         this.Content.Measure(availableSize - this.Padding.Total);
 
         return availableSize;
