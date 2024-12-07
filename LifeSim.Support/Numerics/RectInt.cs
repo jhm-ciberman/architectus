@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 
 namespace LifeSim.Support.Numerics;
 
@@ -162,6 +163,11 @@ public struct RectInt : IEquatable<RectInt>
             && this.Height == other.Height;
     }
 
+    /// <summary>
+    /// Deflates the rectangle by the given thickness.
+    /// </summary>
+    /// <param name="thickness">The thickness to deflate the rectangle by.</param>
+    /// <returns>The deflated rectangle.</returns>
     public RectInt Deflate(ThicknessInt thickness)
     {
         return new RectInt(

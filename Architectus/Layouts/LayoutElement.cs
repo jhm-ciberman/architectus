@@ -71,18 +71,6 @@ public abstract class LayoutElement
         return flip * rotation;
     }
 
-    private Vector2Int TransformSize(Vector2Int size)
-    {
-        var rect = this.TransformRect(new RectInt(0, 0, size.X, size.Y));
-        return new Vector2Int(rect.Width, rect.Height);
-    }
-
-    private Vector2Int TransformSizeInverse(Vector2Int size)
-    {
-        var rect = this.TransformRectInverse(new RectInt(0, 0, size.X, size.Y));
-        return new Vector2Int(rect.Width, rect.Height);
-    }
-
     private static RectInt TransformRect(RectInt rect, Matrix3x2 matrix)
     {
         var a = new Vector2(rect.X, rect.Y);
@@ -115,6 +103,16 @@ public abstract class LayoutElement
         }
 
         return TransformRect(rect, inverse);
+    }
+
+    private Vector2Int TransformSize(Vector2Int size)
+    {
+        return (((int)this.Rotation) % 180) == 0 ? size : new Vector2Int(size.Y, size.X);
+    }
+
+    private Vector2Int TransformSizeInverse(Vector2Int size)
+    {
+        return (((int)this.Rotation) % 180) == 0 ? size : new Vector2Int(size.Y, size.X);
     }
 }
 
