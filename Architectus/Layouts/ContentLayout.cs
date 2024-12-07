@@ -7,11 +7,11 @@ public abstract class ContentLayout : LayoutElement
 {
     public LayoutElement Content { get; set; } = null!;
 
-    public override void UpdateWorldMatrix(Matrix3x2 parentMatrix)
+    public override void UpdateWorldTransform(LayoutElement parent)
     {
-        base.UpdateWorldMatrix(parentMatrix);
+        base.UpdateWorldTransform(parent);
 
-        this.Content.UpdateWorldMatrix(this.WorldMatrix);
+        this.Content.UpdateWorldTransform(this);
     }
 
     protected override RectInt ArrangeOverride(RectInt finalRect)

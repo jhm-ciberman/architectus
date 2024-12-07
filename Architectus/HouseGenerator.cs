@@ -12,7 +12,6 @@ public class HouseGenerator
     {
         var layout = new PaddingLayout
         {
-            Rotation = LayoutRotation.Rotation0,
             FlipX = true,
             Padding = new ThicknessInt(6, 1, 1, 1),
             Content = new StackLayout
@@ -40,9 +39,8 @@ public class HouseGenerator
 
         house = new HouseLot(this.PlotSize);
 
-        layout.UpdateWorldMatrix(Matrix3x2.Identity);
+        layout.UpdateWorldTransform(layout);
         layout.Measure(this.PlotSize);
-        layout.UpdateWorldMatrix(Matrix3x2.Identity);
         layout.Arrange(new RectInt(0, 0, this.PlotSize.X, this.PlotSize.Y));
         layout.Imprint(house);
 

@@ -1,5 +1,3 @@
-using System;
-using System.Numerics;
 using LifeSim.Support.Numerics;
 
 namespace Architectus.Layouts;
@@ -27,12 +25,14 @@ public abstract class LayoutElement
     /// </summary>
     public RectInt Bounds { get; private set; }
 
-    public Matrix3x2 WorldMatrix { get; private set; } = Matrix3x2.Identity;
+    protected bool WorldFlipX { get; private set; }
 
-    public virtual void UpdateWorldMatrix(Matrix3x2 parentMatrix)
+    protected bool WorldFlipY { get; private set; }
+
+    public virtual void UpdateWorldTransform(LayoutElement parent)
     {
-        var localTransform = this.GetLocalTransform();
-        this.WorldMatrix = localTransform * parentMatrix;
+        this.WorldFlipX = parent.WorldFlipX ^ this.FlipX;
+        this.WorldFlipY = parent.WorldFlipY ^ this.FlipY;
     }
 
     public Vector2Int Measure(Vector2Int availableSize)
@@ -43,8 +43,12 @@ public abstract class LayoutElement
 
     public RectInt Arrange(RectInt finalRect)
     {
-        var bounds = this.ArrangeOverride(finalRect);
-        this.Bounds = TransformRect(bounds, this.WorldMatrix);
+        // Apply flips to determine final position
+        var x = this.WorldFlipX ? finalRect.X + finalRect.Width - this.DesiredSize.X : finalRect.X;
+        var y = this.WorldFlipY ? finalRect.Y + finalRect.Height - this.DesiredSize.Y : finalRect.Y;
+
+        var localBounds = new RectInt(x, y, this.DesiredSize.X, this.DesiredSize.Y);
+        this.Bounds = this.ArrangeOverride(localBounds);
 
         return this.Bounds;
     }
@@ -62,35 +66,6 @@ public abstract class LayoutElement
     protected virtual RectInt ArrangeOverride(RectInt finalRect)
     {
         return finalRect;
-    }
-
-    private Matrix3x2 GetLocalTransform()
-    {
-        // Determine the center point of the element based on its bounds
-        Vector2 center = this.Bounds.Position + new Vector2(this.DesiredSize.X, this.DesiredSize.Y) / 2;
-
-        var flip = Matrix3x2.CreateScale(this.FlipX ? -1 : 1, this.FlipY ? -1 : 1, center);
-
-        return flip;
-    }
-
-    private static RectInt TransformRect(RectInt rect, Matrix3x2 matrix)
-    {
-        var a = new Vector2(rect.X, rect.Y);
-        var b = new Vector2(rect.X + rect.Width, rect.Y);
-        var c = new Vector2(rect.X, rect.Y + rect.Height);
-        var d = new Vector2(rect.X + rect.Width, rect.Y + rect.Height);
-
-        a = Vector2.Transform(a, matrix);
-        b = Vector2.Transform(b, matrix);
-        c = Vector2.Transform(c, matrix);
-        d = Vector2.Transform(d, matrix);
-
-        var min = Vector2.Min(Vector2.Min(a, b), Vector2.Min(c, d));
-        var max = Vector2.Max(Vector2.Max(a, b), Vector2.Max(c, d));
-        var delta = max - min;
-
-        return new RectInt((int)min.X, (int)min.Y, (int)delta.X, (int)delta.Y);
     }
 }
 

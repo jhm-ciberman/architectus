@@ -7,13 +7,13 @@ public abstract class ContainerLayout : LayoutElement
 {
     public List<LayoutElement> Children { get; } = new List<LayoutElement>();
 
-    public override void UpdateWorldMatrix(Matrix3x2 parentMatrix)
+    public override void UpdateWorldTransform(LayoutElement parent)
     {
-        base.UpdateWorldMatrix(parentMatrix);
+        base.UpdateWorldTransform(parent);
 
         foreach (var child in this.Children)
         {
-            child.UpdateWorldMatrix(this.WorldMatrix);
+            child.UpdateWorldTransform(this);
         }
     }
 
