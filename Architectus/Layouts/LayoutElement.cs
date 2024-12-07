@@ -96,20 +96,21 @@ public abstract class LayoutElement
 
     private static RectInt TransformRect(RectInt rect, Matrix3x2 matrix)
     {
-        var points = new[]
-        {
-            Vector2.Transform(new Vector2(rect.X, rect.Y), matrix),
-            Vector2.Transform(new Vector2(rect.X + rect.Width, rect.Y), matrix),
-            Vector2.Transform(new Vector2(rect.X, rect.Y + rect.Height), matrix),
-            Vector2.Transform(new Vector2(rect.X + rect.Width, rect.Y + rect.Height), matrix)
-        };
+        var a = new Vector2(rect.X, rect.Y);
+        var b = new Vector2(rect.X + rect.Width, rect.Y);
+        var c = new Vector2(rect.X, rect.Y + rect.Height);
+        var d = new Vector2(rect.X + rect.Width, rect.Y + rect.Height);
 
-        var minX = points.Min(p => p.X);
-        var minY = points.Min(p => p.Y);
-        var maxX = points.Max(p => p.X);
-        var maxY = points.Max(p => p.Y);
+        a = Vector2.Transform(a, matrix);
+        b = Vector2.Transform(b, matrix);
+        c = Vector2.Transform(c, matrix);
+        d = Vector2.Transform(d, matrix);
 
-        return new RectInt((int)minX, (int)minY, (int)(maxX - minX), (int)(maxY - minY));
+        var min = Vector2.Min(Vector2.Min(a, b), Vector2.Min(c, d));
+        var max = Vector2.Max(Vector2.Max(a, b), Vector2.Max(c, d));
+        var delta = max - min;
+
+        return new RectInt((int)min.X, (int)min.Y, (int)delta.X, (int)delta.Y);
     }
 
     private RectInt TransformRect(RectInt rect)
