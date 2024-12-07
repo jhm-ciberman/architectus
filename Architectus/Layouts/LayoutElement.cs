@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Numerics;
 using LifeSim.Support.Numerics;
 
@@ -28,17 +27,11 @@ public abstract class LayoutElement
     {
         var localTransform = this.GetLocalTransform();
         this.WorldMatrix = localTransform * parentMatrix;
-
-        Console.WriteLine($"{this.GetType().Name} WorldMatrix: {this.WorldMatrix}");
     }
 
     public Vector2Int Measure(Vector2Int availableSize)
     {
-        Console.WriteLine($"Measuring1 {this.GetType().Name} with available size {availableSize}");
-
         availableSize = this.TransformSizeInverse(availableSize);
-
-        Console.WriteLine($"Measuring2 {this.GetType().Name} with available size {availableSize}");
 
         this.DesiredSize = this.MeasureOverride(availableSize);
         return this.TransformSize(this.DesiredSize);
@@ -46,12 +39,8 @@ public abstract class LayoutElement
 
     public RectInt Arrange(RectInt finalRect)
     {
-        Console.WriteLine($"Arranging1 {this.GetType().Name} with final rect {finalRect}");
-
         var bounds = this.ArrangeOverride(finalRect);
         this.Bounds = this.TransformRect(bounds);
-
-        Console.WriteLine($"Arranging3 {this.GetType().Name} with bounds {bounds} => {this.Bounds}");
 
         return this.Bounds;
     }
