@@ -3,6 +3,10 @@ using LifeSim.Support.Numerics;
 
 namespace Architectus.Layouts;
 
+/// <summary>
+/// Represents an element in a layout. This is the base class for all layout elements
+/// and provides the basic functionality for measuring, arranging, and imprinting elements.
+/// </summary>
 public abstract class LayoutElement
 {
     /// <summary>
@@ -26,6 +30,10 @@ public abstract class LayoutElement
     /// </summary>
     public RectInt Bounds { get; private set; }
 
+    /// <summary>
+    /// Gets the world matrix of the element. This matrix transforms the local space of the element to the
+    /// world space of the layout.
+    /// </summary>
     public Matrix3x2 WorldMatrix { get; private set; } = Matrix3x2.Identity;
 
     /// <summary>
@@ -89,6 +97,10 @@ public abstract class LayoutElement
         return finalRect;
     }
 
+    /// <summary>
+    /// Computes the local transform of the element.
+    /// </summary>
+    /// <returns>The local transform matrix</returns>
     private Matrix3x2 GetLocalTransform()
     {
         Vector2 center = this.Bounds.Position + new Vector2(this.DesiredSize.X, this.DesiredSize.Y) / 2;
@@ -98,6 +110,12 @@ public abstract class LayoutElement
         return Matrix3x2.CreateScale(scaleX, scaleY, center);
     }
 
+    /// <summary>
+    /// Transforms a rectangle by a transformation matrix.
+    /// </summary>
+    /// <param name="rect">The rectangle to transform</param>
+    /// <param name="matrix">The transformation matrix</param>
+    /// <returns>The transformed rectangle</returns>
     private static RectInt TransformRect(RectInt rect, Matrix3x2 matrix)
     {
         var a = new Vector2(rect.X, rect.Y);

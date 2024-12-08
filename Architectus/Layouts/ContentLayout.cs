@@ -3,10 +3,17 @@ using LifeSim.Support.Numerics;
 
 namespace Architectus.Layouts;
 
+/// <summary>
+/// Represents a layout element that contains a single child element.
+/// </summary>
 public abstract class ContentLayout : LayoutElement
 {
+    /// <summary>
+    /// Gets or sets the content of the layout.
+    /// </summary>
     public LayoutElement Content { get; set; } = null!;
 
+    /// <inheritdoc/>
     public override void UpdateWorldMatrix(Matrix3x2 parentMatrix)
     {
         base.UpdateWorldMatrix(parentMatrix);
@@ -14,6 +21,7 @@ public abstract class ContentLayout : LayoutElement
         this.Content.UpdateWorldMatrix(this.WorldMatrix);
     }
 
+    /// <inheritdoc/>
     protected override RectInt ArrangeOverride(RectInt finalRect)
     {
         this.Content.Arrange(finalRect);
@@ -21,6 +29,7 @@ public abstract class ContentLayout : LayoutElement
         return this.Content.Bounds;
     }
 
+    /// <inheritdoc/>
     protected override Vector2Int MeasureOverride(Vector2Int availableSize)
     {
         this.Content.Measure(availableSize);
@@ -28,6 +37,7 @@ public abstract class ContentLayout : LayoutElement
         return this.Content.DesiredSize;
     }
 
+    /// <inheritdoc/>
     public override void Imprint(HouseLot house)
     {
         this.Content.Imprint(house);
