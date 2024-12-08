@@ -7,13 +7,16 @@ namespace Architectus;
 public class HouseGenerator
 {
     public Vector2Int PlotSize { get; set; } = new Vector2Int(20, 10);
+    public bool FlipX { get; set; } = false;
+    public bool FlipY { get; set; } = false;
 
     public bool TryGenerate(out HouseLot house)
     {
         var layout = new PaddingLayout
         {
-            FlipX = true,
-            Padding = new ThicknessInt(6, 1, 1, 1),
+            FlipX = this.FlipX,
+            FlipY = this.FlipY,
+            Padding = new ThicknessInt(6, 1, 6, 1),
             Content = new StackLayout
             {
                 Orientation = Orientation.Horizontal,
@@ -39,8 +42,9 @@ public class HouseGenerator
 
         house = new HouseLot(this.PlotSize);
 
-        layout.UpdateWorldTransform(layout);
+        //layout.UpdateWorldMatrix(Matrix3x2.Identity);
         layout.Measure(this.PlotSize);
+        layout.UpdateWorldMatrix(Matrix3x2.Identity);
         layout.Arrange(new RectInt(0, 0, this.PlotSize.X, this.PlotSize.Y));
         layout.Imprint(house);
 

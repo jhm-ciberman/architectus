@@ -47,6 +47,12 @@ public partial class MainForm : Form
         var floorIndexStepper = new NumericStepper { MinValue = 0, MaxValue = 10, Value = 0 };
         floorIndexStepper.ValueBinding.BindDataContext((HousePreviewViewModel vm) => vm.FloorIndex);
 
+        var flipXCheckBox = new CheckBox { Text = "Flip X" };
+        flipXCheckBox.CheckedBinding.BindDataContext((HousePreviewViewModel vm) => vm.FlipX);
+
+        var flipYCheckBox = new CheckBox { Text = "Flip Y" };
+        flipYCheckBox.CheckedBinding.BindDataContext((HousePreviewViewModel vm) => vm.FlipY);
+
         this._housePreviewControl = new HousePreviewControl
         {
             Size = new Size(400, 400),
@@ -74,6 +80,8 @@ public partial class MainForm : Form
                         heightStepper,
                         "Floor Index",
                         floorIndexStepper,
+                        flipXCheckBox,
+                        flipYCheckBox,
                     },
                 },
                 new StackLayoutItem(this._housePreviewControl, true),
