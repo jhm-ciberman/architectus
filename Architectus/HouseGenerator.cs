@@ -16,23 +16,21 @@ public class HouseGenerator
         {
             FlipX = this.FlipX,
             FlipY = this.FlipY,
-            Padding = new ThicknessInt(6, 1, 6, 1),
+            Padding = new ThicknessInt(6, 1, 1, 1),
             Content = new StackLayout
             {
-                Orientation = Orientation.Horizontal,
-                LastChildFill = true,
+                Orientation = Orientation.Row,
                 Children =
                 {
-                    new RoomElement { Size = new Vector2Int(3, 3), Type = RoomType.LivingRoom },
-                    new RoomElement { Size = new Vector2Int(3, 3), Type = RoomType.Kitchen },
+                    new RoomElement { MinSize = new Vector2Int(3, 3), Type = RoomType.LivingRoom },
+                    new RoomElement { MinSize = new Vector2Int(3, 3), Type = RoomType.Kitchen },
                     new StackLayout
                     {
-                        Orientation = Orientation.Vertical,
-                        LastChildFill = true,
+                        Orientation = Orientation.ColumnReverse,
                         Children =
                         {
-                            new RoomElement { Size = new Vector2Int(3, 3), Type = RoomType.Bedroom },
-                            new RoomElement { Size = new Vector2Int(3, 3), Type = RoomType.Bathroom },
+                            new RoomElement { MinSize = new Vector2Int(3, 3), Type = RoomType.Bedroom },
+                            new RoomElement { MinSize = new Vector2Int(3, 3), Type = RoomType.Bathroom },
                         }
                     }
                 },

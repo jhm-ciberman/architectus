@@ -41,6 +41,11 @@ public struct Vector2Int : IEquatable<Vector2Int>
     public static Vector2Int UnitY => new Vector2Int(0, 1);
 
     /// <summary>
+    /// Gets a vector with both components set to <see cref="int.MinValue"/>.
+    /// </summary>
+    public static Vector2Int MaxValue => new Vector2Int(int.MaxValue, int.MaxValue);
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="Vector2Int"/> struct.
     /// </summary>
     /// <param name="x">The X component of the vector.</param>
