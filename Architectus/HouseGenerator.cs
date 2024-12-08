@@ -17,15 +17,16 @@ public class HouseGenerator
             FlipX = this.FlipX,
             FlipY = this.FlipY,
             Padding = new ThicknessInt(6, 1, 1, 1),
-            Content = new StackLayout
+            Content = new DockLayout
             {
-                Orientation = Orientation.Row,
+                LastChildFill = true,
                 Children =
                 {
-                    new RoomElement { MinSize = new Vector2Int(3, 3), Type = RoomType.LivingRoom },
-                    new RoomElement { MinSize = new Vector2Int(3, 3), Type = RoomType.Kitchen },
+                    new RoomElement { Dock = Dock.Top, MinSize = new Vector2Int(3, 3), Type = RoomType.LivingRoom },
+                    new RoomElement { Dock = Dock.Left, MinSize = new Vector2Int(3, 3), Type = RoomType.Kitchen },
                     new StackLayout
                     {
+                        Dock = Dock.Left,
                         Orientation = Orientation.ColumnReverse,
                         Children =
                         {

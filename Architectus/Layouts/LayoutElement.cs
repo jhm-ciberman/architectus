@@ -37,6 +37,12 @@ public abstract class LayoutElement
     public Matrix3x2 WorldMatrix { get; private set; } = Matrix3x2.Identity;
 
     /// <summary>
+    /// Gets or sets the dock position of the element within its parent. This property is only
+    /// relevent for elements that are children of a <see cref="DockLayout"/>.
+    /// </summary>
+    public Dock Dock { get; set; } = Dock.Left;
+
+    /// <summary>
     /// Updates the world matrix of the element
     /// </summary>
     /// <param name="parentMatrix">The world matrix of the parent element</param>
