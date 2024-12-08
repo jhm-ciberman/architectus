@@ -28,18 +28,34 @@ public abstract class LayoutElement
 
     public Matrix3x2 WorldMatrix { get; private set; } = Matrix3x2.Identity;
 
+    /// <summary>
+    /// Updates the world matrix of the element
+    /// </summary>
+    /// <param name="parentMatrix">The world matrix of the parent element</param>
     public virtual void UpdateWorldMatrix(Matrix3x2 parentMatrix)
     {
         var localTransform = this.GetLocalTransform();
         this.WorldMatrix = localTransform * parentMatrix;
     }
 
+    /// <summary>
+    /// Measures the element and returns the desired size. The <see cref="DesiredSize"/> property is set to the
+    /// returned value.
+    /// </summary>
+    /// <param name="availableSize">The size that the parent element has available to give to this element</param>
+    /// <returns>The desired size of the element</returns>
     public Vector2Int Measure(Vector2Int availableSize)
     {
         this.DesiredSize = this.MeasureOverride(availableSize);
         return this.DesiredSize;
     }
 
+    /// <summary>
+    /// Arranges the element within the given bounds. The <see cref="Bounds"/> property is set to the
+    /// returned value.
+    /// </summary>
+    /// <param name="finalRect">The bounds that the element should be arranged within</param>
+    /// <returns>The actual bounds that the element occupies</returns>
     public RectInt Arrange(RectInt finalRect)
     {
         var bounds = this.ArrangeOverride(finalRect);
@@ -48,16 +64,26 @@ public abstract class LayoutElement
         return this.Bounds;
     }
 
+    /// <summary>
+    /// Imprints the element onto the house lot.
+    /// </summary>
+    /// <param name="house">The house lot to imprint the element onto</param>
     public virtual void Imprint(HouseLot house)
     {
         // Do nothing by default
     }
 
+    /// <summary>
+    /// Measures the element and returns the desired size.
+    /// </summary>
     protected virtual Vector2Int MeasureOverride(Vector2Int availableSize)
     {
         return Vector2Int.Zero;
     }
 
+    /// <summary>
+    /// Arranges the element within the given bounds.
+    /// </summary>
     protected virtual RectInt ArrangeOverride(RectInt finalRect)
     {
         return finalRect;
