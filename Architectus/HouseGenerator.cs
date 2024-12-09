@@ -1,4 +1,5 @@
 using System.Numerics;
+using Architectus.Components;
 using Architectus.Layouts;
 using LifeSim.Support.Numerics;
 
@@ -9,6 +10,7 @@ public class HouseGenerator
     public Vector2Int PlotSize { get; set; } = new Vector2Int(20, 10);
     public bool FlipX { get; set; } = false;
     public bool FlipY { get; set; } = false;
+    public int Seed { get; set; } = 0;
 
     public bool TryGenerate(out HouseLot house)
     {
@@ -17,27 +19,8 @@ public class HouseGenerator
             FlipX = this.FlipX,
             FlipY = this.FlipY,
             Padding = new ThicknessInt(6, 1, 1, 1),
-            Content = new DockLayout
-            {
-                LastChildFill = true,
-                Children =
-                {
-                    new RoomElement { Dock = Dock.Top, MinSize = new Vector2Int(3, 3), Type = RoomType.LivingRoom },
-                    new RoomElement { Dock = Dock.Left, MinSize = new Vector2Int(3, 3), Type = RoomType.Kitchen },
-                    new StackLayout
-                    {
-                        Dock = Dock.Left,
-                        Orientation = Orientation.ColumnReverse,
-                        Children =
-                        {
-                            new RoomElement { MinSize = new Vector2Int(3, 3), Type = RoomType.Bedroom },
-                            new RoomElement { MinSize = new Vector2Int(3, 3), Type = RoomType.Bathroom },
-                        }
-                    }
-                },
-            },
+            Content = GetContent(),
         };
-
 
         house = new HouseLot(this.PlotSize);
 
@@ -48,5 +31,13 @@ public class HouseGenerator
         layout.Imprint(house);
 
         return true;
+    }
+
+    private LayoutElement GetContent()
+    {
+        var component = new TinyHouseComponent();
+        var ctx = new HouseContext(this.Seed);
+        var bounds = new RectInt(0, 0, this.PlotSize.X, this.PlotSize.Y);
+        return component.Expand(bounds, ctx);
     }
 }

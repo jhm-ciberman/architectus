@@ -53,6 +53,9 @@ public partial class MainForm : Form
         var flipYCheckBox = new CheckBox { Text = "Flip Y" };
         flipYCheckBox.CheckedBinding.BindDataContext((HousePreviewViewModel vm) => vm.FlipY);
 
+        var seedStepper = new NumericStepper { MinValue = int.MinValue, MaxValue = int.MaxValue, Value = 0 };
+        seedStepper.ValueBinding.BindDataContext((HousePreviewViewModel vm) => vm.Seed);
+
         this._housePreviewControl = new HousePreviewControl
         {
             Size = new Size(400, 400),
@@ -82,6 +85,8 @@ public partial class MainForm : Form
                         floorIndexStepper,
                         flipXCheckBox,
                         flipYCheckBox,
+                        "Seed",
+                        seedStepper,
                     },
                 },
                 new StackLayoutItem(this._housePreviewControl, true),

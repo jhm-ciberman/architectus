@@ -11,6 +11,7 @@ public class HousePreviewViewModel : ObservableObject
     private int _floorIndex = 0;
     private bool _flipX = false;
     private bool _flipY = false;
+    private int _seed = 0;
     public HouseLot? House { get; private set; } = null;
 
     public HousePreviewViewModel()
@@ -48,12 +49,19 @@ public class HousePreviewViewModel : ObservableObject
         set { if (this.SetProperty(ref this._flipY, value)) this.RegenerateHouse(); }
     }
 
+    public int Seed
+    {
+        get => this._seed;
+        set { if (this.SetProperty(ref this._seed, value)) this.RegenerateHouse(); }
+    }
+
     private void RegenerateHouse()
     {
         var generator = new HouseGenerator();
         generator.PlotSize = new Vector2Int(this._plotWidth, this._plotHeight);
         generator.FlipX = this._flipX;
         generator.FlipY = this._flipY;
+        generator.Seed = this._seed;
 
         if (generator.TryGenerate(out var house))
         {
