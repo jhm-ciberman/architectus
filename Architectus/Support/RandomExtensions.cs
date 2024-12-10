@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Architectus.Layouts;
 using CommunityToolkit.Diagnostics;
 using LifeSim.Support.Numerics;
 
@@ -8,6 +9,11 @@ namespace Architectus.Support;
 
 public static class RandomExtensions
 {
+    public static Orientation NextOrientation(this Random random)
+    {
+        return (Orientation)random.Next(4);
+    }
+
     public static T Choose<T>(this Random random, IReadOnlyList<T> values)
     {
         return values[random.Next(values.Count)];
@@ -66,6 +72,13 @@ public static class RandomExtensions
         return value;
     }
 
+    /// <summary>
+    /// Generates a random <see cref="Vector2Int"/> with the specified minimum and maximum values.
+    /// </summary>
+    /// <param name="random"></param>
+    /// <param name="min">The minimum values for the <see cref="Vector2Int"/>.</param>
+    /// <param name="max">The maximum values for the <see cref="Vector2Int"/>.</param>
+    /// <returns></returns>
     public static Vector2Int NextVector2Int(this Random random, Vector2Int min, Vector2Int max)
     {
         int x = random.Next(min.X, max.X + 1);

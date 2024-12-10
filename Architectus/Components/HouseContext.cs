@@ -16,9 +16,4 @@ public class HouseContext
 
         this.Random = new Random(seed);
     }
-
-    internal Orientation RandomOrientation()
-    {
-        return (Orientation)this.Random.Next(4);
-    }
 }

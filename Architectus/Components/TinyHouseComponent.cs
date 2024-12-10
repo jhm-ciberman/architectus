@@ -1,4 +1,5 @@
 using Architectus.Layouts;
+using Architectus.Support;
 using LifeSim.Support.Numerics;
 
 namespace Architectus.Components;
@@ -9,11 +10,19 @@ public class TinyHouseComponent : Component
     {
         return new StackLayout
         {
-            Orientation = context.RandomOrientation(),
+            Orientation = context.Random.NextOrientation(),
             Children =
             {
-                new RoomElement { MinSize = new Vector2Int(3, 3), Type = RoomType.LivingRoom },
-                new RoomElement { MinSize = new Vector2Int(3, 3), Type = RoomType.Bedroom },
+                new RoomElement
+                {
+                    MinSize = new Vector2Int(3, 3),
+                    Type = RoomType.LivingRoom
+                },
+                new RoomElement
+                {
+                    MinSize = new Vector2Int(3, 3),
+                    Type = RoomType.Bedroom
+                },
             },
         };
     }
