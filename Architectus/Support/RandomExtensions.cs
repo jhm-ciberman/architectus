@@ -85,4 +85,9 @@ public static class RandomExtensions
         int y = random.Next(min.Y, max.Y + 1);
         return new Vector2Int(x, y);
     }
+
+    public static Vector2Int NextVector2Int(this Random random, Vector2Int max)
+    {
+        return random.NextVector2Int(Vector2Int.Zero, max);
+    }
 }
