@@ -69,6 +69,7 @@ public partial class MainForm : Form
         {
             Padding = 10,
             Orientation = Orientation.Horizontal,
+            VerticalContentAlignment = VerticalAlignment.Bottom,
             Items =
             {
                 new StackLayout
@@ -89,7 +90,7 @@ public partial class MainForm : Form
                         seedStepper,
                     },
                 },
-                new StackLayoutItem(this._housePreviewControl, true),
+                new StackLayoutItem(this._housePreviewControl, expand: true),
             }
         };
     }
