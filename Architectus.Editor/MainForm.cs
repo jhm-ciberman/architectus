@@ -69,7 +69,7 @@ public partial class MainForm : Form
         {
             Padding = 10,
             Orientation = Orientation.Horizontal,
-            VerticalContentAlignment = VerticalAlignment.Bottom,
+            VerticalContentAlignment = VerticalAlignment.Stretch,
             Items =
             {
                 new StackLayout
