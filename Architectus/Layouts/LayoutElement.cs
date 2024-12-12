@@ -43,6 +43,13 @@ public abstract class LayoutElement
     public Dock Dock { get; set; } = Dock.Left;
 
     /// <summary>
+    /// Gets or sets the allocation weight. When multiple rooms are placed in a stack layout,
+    /// the remaining space after measuring all rooms is distributed based on the weight of each room.
+    /// So a room with a weight of 2.0 will get four times as much space as a room with a weight of 0.5.
+    /// </summary>
+    public float Weight { get; set; } = 1.0f;
+
+    /// <summary>
     /// Updates the world matrix of the element
     /// </summary>
     /// <param name="parentMatrix">The world matrix of the parent element</param>
