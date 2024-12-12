@@ -16,12 +16,14 @@ public class TinyHouseComponent : Component
                 new RoomElement
                 {
                     MinSize = new Vector2Int(3, 3),
-                    Type = RoomType.LivingRoom
+                    Type = RoomType.LivingRoom,
+                    GrowWeight = 1f,
                 },
                 new RoomElement
                 {
                     MinSize = new Vector2Int(3, 3),
-                    Type = RoomType.Bedroom
+                    Type = RoomType.Bedroom,
+                    GrowWeight = 5f,
                 },
             },
         };

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using LifeSim.Support.Numerics;
 
 namespace Architectus.Layouts;
@@ -65,12 +67,36 @@ public class StackLayout : ContainerLayout
     private RectInt ArrangeRow(RectInt finalRect)
     {
         int currentX = finalRect.X;
+        int remainingSpace = finalRect.Width - this.Children.Sum(c => c.DesiredSize.X);
+        float totalGrowWeight = this.Children.Sum(c => c.GrowWeight);
 
-        foreach (var child in this.Children)
+        int[] extraWidths = new int[this.Children.Count];
+        int extraSpace = remainingSpace;
+
+        for (int i = 0; i < this.Children.Count; i++)
         {
-            child.Arrange(new RectInt(currentX, finalRect.Y, child.DesiredSize.X, finalRect.Height));
+            var child = this.Children[i];
+            if (totalGrowWeight > 0 && child.GrowWeight > 0)
+            {
+                extraWidths[i] = (int)(remainingSpace * (child.GrowWeight / totalGrowWeight));
+                extraSpace -= extraWidths[i];
+            }
+        }
 
-            currentX += child.DesiredSize.X;
+        // Distribute remaining extra space due to rounding
+        for (int i = 0; extraSpace > 0 && i < this.Children.Count; i++)
+        {
+            if (this.Children[i].GrowWeight > 0)
+            {
+                extraWidths[i]++;
+                extraSpace--;
+            }
+        }
+
+        foreach (var (child, extraWidth) in this.Children.Zip(extraWidths, (c, w) => (c, w)))
+        {
+            child.Arrange(new RectInt(currentX, finalRect.Y, child.DesiredSize.X + extraWidth, finalRect.Height));
+            currentX += child.DesiredSize.X + extraWidth;
         }
 
         return finalRect;
@@ -79,12 +105,36 @@ public class StackLayout : ContainerLayout
     private RectInt ArrangeColumn(RectInt finalRect)
     {
         int currentY = finalRect.Y;
+        int remainingSpace = finalRect.Height - this.Children.Sum(c => c.DesiredSize.Y);
+        float totalGrowWeight = this.Children.Sum(c => c.GrowWeight);
 
-        foreach (var child in this.Children)
+        int[] extraHeights = new int[this.Children.Count];
+        int extraSpace = remainingSpace;
+
+        for (int i = 0; i < this.Children.Count; i++)
         {
-            child.Arrange(new RectInt(finalRect.X, currentY, finalRect.Width, child.DesiredSize.Y));
+            var child = this.Children[i];
+            if (totalGrowWeight > 0 && child.GrowWeight > 0)
+            {
+                extraHeights[i] = (int)(remainingSpace * (child.GrowWeight / totalGrowWeight));
+                extraSpace -= extraHeights[i];
+            }
+        }
 
-            currentY += child.DesiredSize.Y;
+        // Distribute remaining extra space due to rounding
+        for (int i = 0; extraSpace > 0 && i < this.Children.Count; i++)
+        {
+            if (this.Children[i].GrowWeight > 0)
+            {
+                extraHeights[i]++;
+                extraSpace--;
+            }
+        }
+
+        foreach (var (child, extraHeight) in this.Children.Zip(extraHeights, (c, h) => (c, h)))
+        {
+            child.Arrange(new RectInt(finalRect.X, currentY, finalRect.Width, child.DesiredSize.Y + extraHeight));
+            currentY += child.DesiredSize.Y + extraHeight;
         }
 
         return finalRect;
@@ -93,11 +143,38 @@ public class StackLayout : ContainerLayout
     private RectInt ArrangeRowReverse(RectInt finalRect)
     {
         int currentX = finalRect.X + finalRect.Width;
+        int remainingSpace = finalRect.Width - this.Children.Sum(c => c.DesiredSize.X);
+        float totalGrowWeight = this.Children.Sum(c => c.GrowWeight);
 
-        foreach (var child in this.Children)
+        int[] extraWidths = new int[this.Children.Count];
+        int extraSpace = remainingSpace;
+
+        for (int i = 0; i < this.Children.Count; i++)
         {
-            currentX -= child.DesiredSize.X;
-            child.Arrange(new RectInt(currentX, finalRect.Y, child.DesiredSize.X, finalRect.Height));
+            var child = this.Children[i];
+            if (totalGrowWeight > 0 && child.GrowWeight > 0)
+            {
+                extraWidths[i] = (int)(remainingSpace * (child.GrowWeight / totalGrowWeight));
+                extraSpace -= extraWidths[i];
+            }
+        }
+
+        // Distribute remaining extra space due to rounding
+        for (int i = 0; extraSpace > 0 && i < this.Children.Count; i++)
+        {
+            if (this.Children[i].GrowWeight > 0)
+            {
+                extraWidths[i]++;
+                extraSpace--;
+            }
+        }
+
+        for (int i = this.Children.Count - 1; i >= 0; i--)
+        {
+            var child = this.Children[i];
+            int extraWidth = extraWidths[i];
+            currentX -= (child.DesiredSize.X + extraWidth);
+            child.Arrange(new RectInt(currentX, finalRect.Y, child.DesiredSize.X + extraWidth, finalRect.Height));
         }
 
         return finalRect;
@@ -106,11 +183,38 @@ public class StackLayout : ContainerLayout
     private RectInt ArrangeColumnReverse(RectInt finalRect)
     {
         int currentY = finalRect.Y + finalRect.Height;
+        int remainingSpace = finalRect.Height - this.Children.Sum(c => c.DesiredSize.Y);
+        float totalGrowWeight = this.Children.Sum(c => c.GrowWeight);
 
-        foreach (var child in this.Children)
+        int[] extraHeights = new int[this.Children.Count];
+        int extraSpace = remainingSpace;
+
+        for (int i = 0; i < this.Children.Count; i++)
         {
-            currentY -= child.DesiredSize.Y;
-            child.Arrange(new RectInt(finalRect.X, currentY, finalRect.Width, child.DesiredSize.Y));
+            var child = this.Children[i];
+            if (totalGrowWeight > 0 && child.GrowWeight > 0)
+            {
+                extraHeights[i] = (int)(remainingSpace * (child.GrowWeight / totalGrowWeight));
+                extraSpace -= extraHeights[i];
+            }
+        }
+
+        // Distribute remaining extra space due to rounding
+        for (int i = 0; extraSpace > 0 && i < this.Children.Count; i++)
+        {
+            if (this.Children[i].GrowWeight > 0)
+            {
+                extraHeights[i]++;
+                extraSpace--;
+            }
+        }
+
+        for (int i = this.Children.Count - 1; i >= 0; i--)
+        {
+            var child = this.Children[i];
+            int extraHeight = extraHeights[i];
+            currentY -= (child.DesiredSize.Y + extraHeight);
+            child.Arrange(new RectInt(finalRect.X, currentY, finalRect.Width, child.DesiredSize.Y + extraHeight));
         }
 
         return finalRect;
