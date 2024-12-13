@@ -15,8 +15,27 @@ public class StackLayout : ContainerLayout
     /// <inheritdoc/>
     protected override Vector2Int MeasureOverride(Vector2Int availableSize)
     {
-        bool isHorizontal = this.IsHorizontal;
-        return this.MeasureMainAxis(availableSize, isHorizontal);
+        Vector2Int size = Vector2Int.Zero;
+        if (this.IsHorizontal)
+        {
+            foreach (var child in this.Children)
+            {
+                child.Measure(availableSize);
+                size.X += child.DesiredSize.X;
+                size.Y = Math.Max(size.Y, child.DesiredSize.Y);
+            }
+        }
+        else
+        {
+            foreach (var child in this.Children)
+            {
+                child.Measure(availableSize);
+                size.X = Math.Max(size.X, child.DesiredSize.X);
+                size.Y += child.DesiredSize.Y;
+            }
+        }
+
+        return size;
     }
 
     /// <inheritdoc/>
@@ -32,25 +51,6 @@ public class StackLayout : ContainerLayout
     private bool IsHorizontal => this.Orientation == Orientation.Row || this.Orientation == Orientation.RowReverse;
 
     private bool IsReverse => this.Orientation == Orientation.RowReverse || this.Orientation == Orientation.ColumnReverse;
-
-    private Vector2Int MeasureMainAxis(Vector2Int availableSize, bool isHorizontal)
-    {
-        int totalMainSize = 0;
-
-        foreach (var child in this.Children)
-        {
-            Vector2Int childAvailable = isHorizontal
-                ? new Vector2Int(availableSize.X - totalMainSize, availableSize.Y)
-                : new Vector2Int(availableSize.X, availableSize.Y - totalMainSize);
-
-            Vector2Int childSize = child.Measure(childAvailable);
-            totalMainSize += isHorizontal ? childSize.X : childSize.Y;
-        }
-
-        return isHorizontal
-            ? new Vector2Int(totalMainSize, availableSize.Y)
-            : new Vector2Int(availableSize.X, totalMainSize);
-    }
 
     private void ArrangeMainAxis(RectInt finalRect, bool isHorizontal, bool isReverse)
     {
