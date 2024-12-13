@@ -97,19 +97,13 @@ public class Floor
         var size = area.Size;
         if (position.X < 0 || position.X + size.X > this.Size.X || position.Y < 0 || position.Y + size.Y > this.Size.Y)
         {
-            //return; //throw new ArgumentException("The rectangle is out of bounds.", nameof(area));
+            throw new ArgumentException("The rectangle is out of bounds.", nameof(area));
         }
 
         for (var x = position.X; x < position.X + size.X; x++)
         {
             for (var y = position.Y; y < position.Y + size.Y; y++)
             {
-                if (x < 0 || x >= this.Size.X || y < 0 || y >= this.Size.Y)
-                {
-                    //throw new ArgumentException("The rectangle is out of bounds.", nameof(area));
-                    continue;
-                }
-
                 if (this._roomsMap[x, y] != null)
                 {
                     throw new InvalidOperationException($"The cell at {x}, {y} is already assigned to a room.");
@@ -121,12 +115,6 @@ public class Floor
         {
             for (var y = position.Y; y < position.Y + size.Y; y++)
             {
-                if (x < 0 || x >= this.Size.X || y < 0 || y >= this.Size.Y)
-                {
-                    //throw new ArgumentException("The rectangle is out of bounds.", nameof(area));
-                    continue;
-                }
-
                 this._roomsMap[x, y] = room;
             }
         }
