@@ -16,7 +16,6 @@ public class TinyHouseComponent : Component
                 new RoomElement
                 {
                     Type = RoomType.LivingRoom,
-                    MinSize = new Vector2Int(2, 2),
                     GrowWeight = context.Random.NextSingle(1f, 3f),
                 },
                 new StackLayout
@@ -29,13 +28,11 @@ public class TinyHouseComponent : Component
                         new RoomElement
                         {
                             Type = RoomType.Bedroom,
-                            MinSize = new Vector2Int(2, 2),
                             GrowWeight = context.Random.NextSingle(1f, 6f),
                         },
                         new RoomElement
                         {
                             Type = RoomType.Kitchen,
-                            MinSize = new Vector2Int(2, 2),
                             GrowWeight = context.Random.NextSingle(1f, 6f),
                         },
                     },

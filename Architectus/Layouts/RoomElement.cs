@@ -8,7 +8,7 @@ public class RoomElement : LayoutElement
     /// <summary>
     /// Gets or sets the minimum size of the room.
     /// </summary>
-    public Vector2Int MinSize { get; set; } = Vector2Int.One;
+    public Vector2Int MinSize { get; set; } = new Vector2Int(2, 2); // A room smaller than 2x2 is useless
 
     /// <summary>
     /// Gets or sets the maximum size of the room.
