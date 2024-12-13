@@ -27,7 +27,11 @@ public class RoomElement : LayoutElement
 
     protected override RectInt ArrangeOverride(RectInt finalRect)
     {
-        finalRect.Size = Vector2Int.Max(finalRect.Size, this.MinSize);
+        if (finalRect.Size.X < this.MinSize.X || finalRect.Size.Y < this.MinSize.Y)
+        {
+            throw new InvalidOperationException($"The available size is too small for the room. MinSize: {this.MinSize}, AvailableSize: {finalRect.Size}");
+        }
+
         finalRect.Size = Vector2Int.Min(finalRect.Size, this.MaxSize);
 
         return finalRect;

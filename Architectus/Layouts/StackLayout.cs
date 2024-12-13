@@ -107,42 +107,46 @@ public class StackLayout : ContainerLayout
 
     private void ArrangeChildrenForward(RectInt finalRect, bool isHorizontal, int[] extraSpaceAllocated)
     {
-        int currentMain = isHorizontal ? finalRect.X : finalRect.Y;
+        Vector2Int coord = finalRect.Position;
 
         foreach (var (child, extraSpace) in this.Children.Zip(extraSpaceAllocated))
         {
             if (isHorizontal)
             {
-                child.Arrange(new RectInt(currentMain, finalRect.Y, child.DesiredSize.X + extraSpace, finalRect.Height));
-                currentMain += child.DesiredSize.X + extraSpace;
+                var size = new Vector2Int(child.DesiredSize.X + extraSpace, finalRect.Height);
+                child.Arrange(new RectInt(coord, size));
+                coord.X += child.DesiredSize.X + extraSpace;
             }
             else
             {
-                child.Arrange(new RectInt(finalRect.X, currentMain, finalRect.Width, child.DesiredSize.Y + extraSpace));
-                currentMain += child.DesiredSize.Y + extraSpace;
+                var size = new Vector2Int(finalRect.Width, child.DesiredSize.Y + extraSpace);
+                child.Arrange(new RectInt(coord, size));
+                coord.Y += child.DesiredSize.Y + extraSpace;
             }
         }
     }
 
     private void ArrangeChildrenReverse(RectInt finalRect, bool isHorizontal, int[] extraSpaceAllocated)
     {
-        int currentMain = isHorizontal ? finalRect.X + finalRect.Width : finalRect.Y + finalRect.Height;
+        var coord = isHorizontal
+            ? new Vector2Int(finalRect.X + finalRect.Width, finalRect.Y)
+            : new Vector2Int(finalRect.X, finalRect.Y + finalRect.Height);
+
         int childCount = this.Children.Count;
 
-        for (int i = childCount - 1; i >= 0; i--)
+        foreach (var (child, extraSpace) in this.Children.Zip(extraSpaceAllocated))
         {
-            var child = this.Children[i];
-            int extraSpace = extraSpaceAllocated[i];
-
             if (isHorizontal)
             {
-                currentMain -= (child.DesiredSize.X + extraSpace);
-                child.Arrange(new RectInt(currentMain, finalRect.Y, child.DesiredSize.X + extraSpace, finalRect.Height));
+                var size = new Vector2Int(child.DesiredSize.X + extraSpace, finalRect.Height);
+                coord.X -= size.X;
+                child.Arrange(new RectInt(coord, size));
             }
             else
             {
-                currentMain -= (child.DesiredSize.Y + extraSpace);
-                child.Arrange(new RectInt(finalRect.X, currentMain, finalRect.Width, child.DesiredSize.Y + extraSpace));
+                var size = new Vector2Int(finalRect.Width, child.DesiredSize.Y + extraSpace);
+                coord.Y -= size.Y;
+                child.Arrange(new RectInt(coord, size));
             }
         }
     }

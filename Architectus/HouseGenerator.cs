@@ -37,7 +37,7 @@ public class HouseGenerator
     {
         var component = new TinyHouseComponent();
         var ctx = new HouseContext(this.Seed);
-        var bounds = new RectInt(0, 0, this.PlotSize.X, this.PlotSize.Y);
+        var bounds = new RectInt(0, 0, this.PlotSize.X - 7, this.PlotSize.Y - 2);
         return component.Expand(bounds, ctx);
     }
 }

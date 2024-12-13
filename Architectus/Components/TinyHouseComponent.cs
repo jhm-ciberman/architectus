@@ -10,21 +10,36 @@ public class TinyHouseComponent : Component
     {
         return new StackLayout
         {
-            Orientation = context.Random.NextOrientation(),
+            Orientation = context.Random.NextOrientationLargeSide(bounds.Size),
             Children =
             {
                 new RoomElement
                 {
-                    MinSize = new Vector2Int(3, 3),
                     Type = RoomType.LivingRoom,
-                    GrowWeight = 1f,
+                    MinSize = new Vector2Int(2, 2),
+                    GrowWeight = context.Random.NextSingle(1f, 3f),
                 },
-                new RoomElement
+                new StackLayout
                 {
-                    MinSize = new Vector2Int(3, 3),
-                    Type = RoomType.Bedroom,
-                    GrowWeight = 5f,
-                },
+                    Orientation = context.Random.NextOrientationSmallSide(bounds.Size),
+                    GrowWeight = context.Random.NextSingle(1f, 3f),
+                    Children =
+                    {
+
+                        new RoomElement
+                        {
+                            Type = RoomType.Bedroom,
+                            MinSize = new Vector2Int(2, 2),
+                            GrowWeight = context.Random.NextSingle(1f, 6f),
+                        },
+                        new RoomElement
+                        {
+                            Type = RoomType.Kitchen,
+                            MinSize = new Vector2Int(2, 2),
+                            GrowWeight = context.Random.NextSingle(1f, 6f),
+                        },
+                    },
+                }
             },
         };
     }

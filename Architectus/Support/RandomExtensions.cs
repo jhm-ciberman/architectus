@@ -14,6 +14,41 @@ public static class RandomExtensions
         return (Orientation)random.Next(4);
     }
 
+    public static bool NextBool(this Random random)
+    {
+        return random.Next(2) == 0;
+    }
+
+    public static Orientation NextOrientationRow(this Random random)
+    {
+        return random.NextBool() ? Orientation.Row : Orientation.RowReverse;
+    }
+
+    public static Orientation NextOrientationColumn(this Random random)
+    {
+        return random.NextBool() ? Orientation.Column : Orientation.ColumnReverse;
+    }
+
+    public static Orientation NextOrientationLargeSide(this Random random, Vector2Int size)
+    {
+        return size.X > size.Y ? NextOrientationRow(random) : NextOrientationColumn(random);
+    }
+
+    public static Orientation NextOrientationSmallSide(this Random random, Vector2Int size)
+    {
+        return size.X > size.Y ? NextOrientationColumn(random) : NextOrientationRow(random);
+    }
+
+    public static float NextSingle(this Random random, float min, float max)
+    {
+        return (float)random.NextDouble() * (max - min) + min;
+    }
+
+    public static float NextSingle(this Random random, float max)
+    {
+        return random.NextSingle(0, max);
+    }
+
     public static T Choose<T>(this Random random, IReadOnlyList<T> values)
     {
         return values[random.Next(values.Count)];
