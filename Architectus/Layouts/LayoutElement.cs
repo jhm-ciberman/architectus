@@ -1,3 +1,4 @@
+using System;
 using System.Numerics;
 using LifeSim.Support.Numerics;
 
@@ -67,7 +68,15 @@ public abstract class LayoutElement
     /// <returns>The desired size of the element</returns>
     public Vector2Int Measure(Vector2Int availableSize)
     {
-        this.DesiredSize = this.MeasureOverride(availableSize);
+        var desired = this.MeasureOverride(availableSize);
+
+        if (desired.X > availableSize.X || desired.Y > availableSize.Y)
+        {
+            throw new InvalidOperationException($"The desired size of the element is larger than the available size. Desired: {desired}, Available: {availableSize}");
+        }
+
+        this.DesiredSize = desired;
+
         return this.DesiredSize;
     }
 
