@@ -5,15 +5,18 @@ namespace Architectus.Components;
 
 public class HouseContext
 {
-    public Random Random { get; }
+    public Random Random { get; private set; }
+
+    public int Seed { get; }
 
     public HouseContext(int seed = 0)
     {
-        if (seed == 0)
-        {
-            seed = Environment.TickCount;
-        }
+        this.Seed = seed == 0 ? Environment.TickCount : seed;
+        this.Random = new Random(this.Seed);
+    }
 
-        this.Random = new Random(seed);
+    public void Reset()
+    {
+        this.Random = new Random(this.Seed);
     }
 }
