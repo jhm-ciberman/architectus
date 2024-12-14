@@ -62,6 +62,7 @@ public partial class MainForm : Form
             BackgroundColor = Colors.White,
         };
         this._housePreviewControl.HouseLotBinding.BindDataContext((HousePreviewViewModel vm) => vm.House);
+        this._housePreviewControl.ErrorMessageBinding.BindDataContext((HousePreviewViewModel vm) => vm.ErrorMessage);
         this._housePreviewControl.FloorIndexBinding.BindDataContext((HousePreviewViewModel vm) => vm.FloorIndex);
 
 

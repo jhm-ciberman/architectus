@@ -14,6 +14,8 @@ public class HousePreviewViewModel : ObservableObject
     private int _seed = 0;
     public HouseLot? House { get; private set; } = null;
 
+    public string ErrorMessage { get; private set; } = string.Empty;
+
     public HousePreviewViewModel()
     {
         this.RegenerateHouse();
@@ -65,13 +67,16 @@ public class HousePreviewViewModel : ObservableObject
 
         if (generator.TryGenerate(out var house))
         {
+            this.ErrorMessage = string.Empty;
             this.House = house;
         }
         else
         {
+            this.ErrorMessage = generator.LastException?.Message ?? "Could not generate house";
             this.House = null!;
         }
 
         this.OnPropertyChanged(nameof(this.House));
+        this.OnPropertyChanged(nameof(this.ErrorMessage));
     }
 }

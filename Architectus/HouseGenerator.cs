@@ -12,6 +12,8 @@ public class HouseGenerator
     public bool FlipY { get; set; } = false;
     public int Seed { get; set; } = 0;
 
+    public ArchitectusException? LastException { get; private set; } = null;
+
     public bool TryGenerate(out HouseLot house)
     {
         var layout = new PaddingLayout
@@ -24,11 +26,19 @@ public class HouseGenerator
 
         house = new HouseLot(this.PlotSize);
 
-        //layout.UpdateWorldMatrix(Matrix3x2.Identity);
-        layout.Measure(this.PlotSize);
-        layout.UpdateWorldMatrix(Matrix3x2.Identity);
-        layout.Arrange(new RectInt(0, 0, this.PlotSize.X, this.PlotSize.Y));
-        layout.Imprint(house);
+        try
+        {
+            //layout.UpdateWorldMatrix(Matrix3x2.Identity);
+            layout.Measure(this.PlotSize);
+            layout.UpdateWorldMatrix(Matrix3x2.Identity);
+            layout.Arrange(new RectInt(0, 0, this.PlotSize.X, this.PlotSize.Y));
+            layout.Imprint(house);
+        }
+        catch (ArchitectusException e)
+        {
+            this.LastException = e;
+            return false;
+        }
 
         return true;
     }

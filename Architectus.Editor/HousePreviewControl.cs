@@ -37,9 +37,24 @@ public class HousePreviewControl : Drawable
         }
     }
 
+    private string? _errorMessage = null;
+
+    public string? ErrorMessage
+    {
+        get => this._errorMessage;
+        set
+        {
+            if (this._errorMessage == value)
+                return;
+            this._errorMessage = value;
+            this.Invalidate();
+        }
+    }
+
     public BindableBinding<HousePreviewControl, HouseLot?> HouseLotBinding { get; }
 
     public BindableBinding<HousePreviewControl, int> FloorIndexBinding { get; }
+    public BindableBinding<HousePreviewControl, string?> ErrorMessageBinding { get; }
 
     private readonly int _cellSize = 22; // The size of each cell in the grid (in pixels).
 
@@ -52,6 +67,8 @@ public class HousePreviewControl : Drawable
     private readonly Font _font = new Font(FontFamilies.Sans, 10f, FontStyle.Bold);
 
     private readonly Brush _fontBrush = new SolidBrush(new Color(TailwindColors.Black, 0.8f));
+
+    private readonly Brush _fontErrorBrush = new SolidBrush(TailwindColors.Red600);
 
     private static Color GetRoomColor(Room room)
     {
@@ -67,7 +84,7 @@ public class HousePreviewControl : Drawable
         };
     }
 
-    private static void DrawTextCentered(Graphics g, Font font, Brush brush, RectangleF bounds, string text)
+    private static void DrawTextCentered(Graphics g, Font font, Brush brush, RectangleF bounds, string text, bool wrap = false)
     {
         var size = g.MeasureString(font, text);
 
@@ -86,8 +103,9 @@ public class HousePreviewControl : Drawable
             brush,
             textBounds,
             text,
+            alignment: FormattedTextAlignment.Center,
             trimming: FormattedTextTrimming.None,
-            wrap: FormattedTextWrapMode.None
+            wrap: wrap ? FormattedTextWrapMode.Word : FormattedTextWrapMode.None
         );
     }
 
@@ -103,23 +121,38 @@ public class HousePreviewControl : Drawable
         this.FloorIndexBinding = new BindableBinding<HousePreviewControl, int>(this,
             self => self.FloorIndex,
             (self, value) => self.FloorIndex = value);
+
+        this.ErrorMessageBinding = new BindableBinding<HousePreviewControl, string?>(this,
+            self => self.ErrorMessage,
+            (self, value) => self.ErrorMessage = value);
     }
 
     protected override void OnPaint(PaintEventArgs e)
     {
         base.OnPaint(e);
 
+        if (!string.IsNullOrEmpty(this.ErrorMessage))
+        {
+            var rect = e.ClipRectangle;
+            var padding = new Size(40, 40);
+            rect.TopLeft += padding;
+            rect.Size -= padding * 2;
+            var message = $"Error Generating House: \n{this.ErrorMessage}";
+            DrawTextCentered(e.Graphics, this._font, this._fontErrorBrush, rect, message, wrap: true);
+            return;
+        }
+
         var house = this.HouseLot;
         if (house == null)
         {
-            DrawTextCentered(e.Graphics, this._font, this._fontBrush, this.Bounds, "No house to preview.");
+            DrawTextCentered(e.Graphics, this._font, this._fontBrush, e.ClipRectangle, "No house to preview.");
             return;
         }
 
         if (this.FloorIndex < 0 || this.FloorIndex >= house.Floors.Count)
         {
             string str = $"Invalid floor index: {this.FloorIndex}. Must be between 0 and {house.Floors.Count - 1}.";
-            DrawTextCentered(e.Graphics, this._font, this._fontBrush, this.Bounds, str);
+            DrawTextCentered(e.Graphics, this._font, this._fontBrush, e.ClipRectangle, str);
             return;
         }
 

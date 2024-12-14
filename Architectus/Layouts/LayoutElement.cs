@@ -1,5 +1,5 @@
-using System;
 using System.Numerics;
+using Architectus.Components;
 using LifeSim.Support.Numerics;
 
 namespace Architectus.Layouts;
@@ -8,7 +8,7 @@ namespace Architectus.Layouts;
 /// Represents an element in a layout. This is the base class for all layout elements
 /// and provides the basic functionality for measuring, arranging, and imprinting elements.
 /// </summary>
-public abstract class LayoutElement
+public abstract class LayoutElement : IComponent
 {
     /// <summary>
     /// Gets or sets whether the element and its children should be flipped horizontally.
@@ -51,6 +51,17 @@ public abstract class LayoutElement
     public float GrowWeight { get; set; } = 1.0f;
 
     /// <summary>
+    /// Expands the element into a LayoutElement using procedural generation.
+    /// </summary>
+    /// <param name="bounds">The bounds that the element should expand into</param>
+    /// <param name="context">The context for the expansion</param>
+    /// <returns>The expanded element</returns>
+    public virtual LayoutElement Expand(RectInt bounds, HouseContext context)
+    {
+        return this;
+    }
+
+    /// <summary>
     /// Updates the world matrix of the element
     /// </summary>
     /// <param name="parentMatrix">The world matrix of the parent element</param>
@@ -66,13 +77,14 @@ public abstract class LayoutElement
     /// </summary>
     /// <param name="availableSize">The size that the parent element has available to give to this element</param>
     /// <returns>The desired size of the element</returns>
+    /// <exception cref="ArchitectusException">Thrown when the desired size is larger than the available size</exception>
     public Vector2Int Measure(Vector2Int availableSize)
     {
         var desired = this.MeasureOverride(availableSize);
 
         if (desired.X > availableSize.X || desired.Y > availableSize.Y)
         {
-            throw new InvalidOperationException($"The desired size of the element is larger than the available size. Desired: {desired}, Available: {availableSize}");
+            throw new ArchitectusException($"The desired size of the element is larger than the available size. Desired: {desired}, Available: {availableSize}");
         }
 
         this.DesiredSize = desired;
